@@ -49,13 +49,7 @@ const Home = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (boxes.length === 0) {
-      setIsLetterEmpty(true);
-    }else{
-      setIsEmpty(false);
-    }}, [boxes]);
-
+  // listen Laravel Echo
   useEffect(() => {
     const channel = echo.channel("wishes");
     channel.listen("WishDrawn", (e) => {
@@ -64,6 +58,7 @@ const Home = () => {
     return () => channel.stopListening("WishDrawn");
   }, []);
 
+  // rút lá
   const handleDraw = async (id) => {
     if (draw <= 0) return false;
 
@@ -92,11 +87,20 @@ const Home = () => {
     }
   };
 
+  // click lá
   const handleClickBox = async (id) => {
+    // hết lá
+    if (boxes.length === 0) {
+      setIsLetterEmpty(true);
+      return;
+    }
+
+    // hết lượt
     if (draw <= 0) {
       setIsEmpty(true);
       return;
     }
+
     const success = await handleDraw(id);
     if (success) setIsOpen(true);
   };
@@ -106,7 +110,7 @@ const Home = () => {
     setDetail({ id: "", wish: "" });
   };
 
-  // ⬇️ Hàm SignOut
+  // Đăng xuất
   const handleSignOut = () => {
     localStorage.removeItem("token"); // xóa token
     navigate("/"); // điều hướng về trang login
@@ -154,7 +158,10 @@ const Home = () => {
         </g>
       </svg>
 
+      {/* Modal lá thư */}
       <LetterModal closeModal={closeModal} isOpen={isOpen} detail={detail} />
+
+      {/* Modal hết lượt */}
       <Modal isOpen={isEmpty} setIsOpen={setIsEmpty}>
         <div className="p-5">
           <h2 className="text-2xl text-center font-bold mb-4 text-gray-800">
@@ -164,6 +171,7 @@ const Home = () => {
         </div>
       </Modal>
 
+      {/* Modal hết lá */}
       <Modal isOpen={isLetterEmpty} setIsOpen={setIsLetterEmpty}>
         <div className="p-5">
           <h2 className="text-2xl text-center font-bold mb-4 text-gray-800">
@@ -172,8 +180,6 @@ const Home = () => {
           <p className="text-xl">Hãy thử lại với lần sau nhé</p>
         </div>
       </Modal>
-
-
     </div>
   );
 };
