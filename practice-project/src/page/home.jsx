@@ -1,20 +1,33 @@
-import Box from "../component/box";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Box from "../component/box";
 import Tree from "../component/tree";
 import Modal from "../component/modal";
 import echo from "../echo";
+import LetterModal from "../component/letter";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
   const [detail, setDetail] = useState({ id: "", wish: "" });
   const [draw, setDraw] = useState(3);
   const [boxes, setBoxes] = useState([]);
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [isLetterEmpty, setIsLetterEmpty] = useState(false);
+
   const r = 210;
   const iconSize = 60;
+
+  // fetch data
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:8000/api/wishes");
+        const res = await fetch("http://127.0.0.1:8000/api/wishes", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // gửi token
+          },
+        });
         const data = await res.json();
 
         const boxesWithPos = data.map((box) => {
@@ -37,19 +50,17 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    if (boxes.length === 0) {
+      setIsLetterEmpty(true);
+    }else{
+      setIsEmpty(false);
+    }}, [boxes]);
+
+  useEffect(() => {
     const channel = echo.channel("wishes");
-
     channel.listen("WishDrawn", (e) => {
-      console.log("Realtime event received:", e); // log toàn bộ object
-      console.log("Wish content:", e.wish); // log trực tiếp wish
-
-      setBoxes((prev) => {
-        const newBoxes = prev.filter((box) => box.id !== e.wish.id);
-        console.log("Updated boxes:", newBoxes);
-        return newBoxes;
-      });
+      setBoxes((prev) => prev.filter((box) => box.id !== e.wish.id));
     });
-
     return () => channel.stopListening("WishDrawn");
   }, []);
 
@@ -61,6 +72,7 @@ const Home = () => {
         method: "POST",
         headers: {
           Accept: "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
@@ -81,7 +93,10 @@ const Home = () => {
   };
 
   const handleClickBox = async (id) => {
-    if (draw <= 0) return;
+    if (draw <= 0) {
+      setIsEmpty(true);
+      return;
+    }
     const success = await handleDraw(id);
     if (success) setIsOpen(true);
   };
@@ -91,8 +106,22 @@ const Home = () => {
     setDetail({ id: "", wish: "" });
   };
 
+  // ⬇️ Hàm SignOut
+  const handleSignOut = () => {
+    localStorage.removeItem("token"); // xóa token
+    navigate("/"); // điều hướng về trang login
+  };
+
   return (
-    <div className="w-screen h-screen bg-gradient-to-r from-blue-700 to-teal-400 grid grid-cols-2">
+    <div className="w-screen h-screen bg-gradient-to-r from-blue-700 to-teal-400 grid grid-cols-2 relative">
+      {/* Nút Đăng xuất */}
+      <button
+        onClick={handleSignOut}
+        className="absolute top-4 right-4 px-4 py-2 bg-red-500 text-white rounded-lg"
+      >
+        Đăng xuất
+      </button>
+
       <div className="flex flex-col items-start justify-start relative p-3 gap-3">
         <div className="text-white text-4xl font-bold">
           Số lá còn lại: {boxes.length}
@@ -125,21 +154,26 @@ const Home = () => {
         </g>
       </svg>
 
-      <Modal isOpen={isOpen} setIsOpen={closeModal}>
-        <div className="flex flex-col items-center justify-center w-150">
-          <div className="title-modal text-center mb-3">
-            <h1 className="text-5xl font-bold mb-4">Chúc Mừng!</h1>
-            <h2 className="text-lg mb-4">Bạn đã mở được một lá mới!</h2>
-          </div>
-
-          <div className="content-modal text-center">
-            <p className="text-xl mb-4 font-normal">{detail.wish.wish}</p>
-            <p className="text-sm">
-              Hãy tiếp tục nhấn vào các lá khác để khám phá thêm nhé!
-            </p>
-          </div>
+      <LetterModal closeModal={closeModal} isOpen={isOpen} detail={detail} />
+      <Modal isOpen={isEmpty} setIsOpen={setIsEmpty}>
+        <div className="p-5">
+          <h2 className="text-2xl text-center font-bold mb-4 text-gray-800">
+            Hết lượt rút!
+          </h2>
+          <p className="text-xl">Hãy thử lại với lần sau nhé</p>
         </div>
       </Modal>
+
+      <Modal isOpen={isLetterEmpty} setIsOpen={setIsLetterEmpty}>
+        <div className="p-5">
+          <h2 className="text-2xl text-center font-bold mb-4 text-gray-800">
+            Hết lá để rút!
+          </h2>
+          <p className="text-xl">Hãy thử lại với lần sau nhé</p>
+        </div>
+      </Modal>
+
+
     </div>
   );
 };

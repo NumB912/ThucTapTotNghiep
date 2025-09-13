@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 
-const Modal = ({ isOpen, setIsOpen, children }) => {
+const Modal = ({ isOpen, setIsOpen, children,className="bg-white" }) => {
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape") {
@@ -18,13 +18,13 @@ const Modal = ({ isOpen, setIsOpen, children }) => {
 
   return createPortal(
     <div
-      className="fixed inset-0 bg-black/30 bg-opacity-50 flex items-center justify-center"
+      className={`fixed inset-0 bg-black/30 bg-opacity-50 flex items-center justify-center `}
       onClick={() => {
         setIsOpen(false);
       }}
     >
       <div
-        className="bg-white p-7 rounded-lg shadow-lg"
+        className={` p-7 rounded-lg  ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

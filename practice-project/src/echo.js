@@ -10,6 +10,5 @@ const echo = new Echo({
   forceTLS: import.meta.env.VITE_PUSHER_SCHEME === "https", 
 });
 
-console.log("Echo instance:", echo);
 
 export default echo;
