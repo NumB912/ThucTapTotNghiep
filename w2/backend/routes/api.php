@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ExamController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\ResultController;
+use App\Http\Controllers\TopicController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,7 +20,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::get('/questions', [QuestionController::class, 'index']);
+Route::post('/questions', [QuestionController::class, 'store']);
+Route::get('/questions/{id}', [QuestionController::class, 'show']);
+Route::put('/questions/{id}', [QuestionController::class, 'update']);
+Route::delete('/questions/{id}', [QuestionController::class, 'destroy']);
+
+Route::get('/results',[ResultController::class,'index']);
+Route::get('/results/{id}',[ResultController::class,'getResultUser']);
+
+Route::get('/topics',[TopicController::class,'index']);
+Route::get('/topic/{id}/question',[TopicController::class,'questionTopic']);
+
+Route::get('/users',[UserController::class,'index']);
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
+Route::middleware('auth:sanctum')->group(function() {
+    Route::post('/exam/start', [ExamController::class, 'startExam']);
+    Route::get('/exam/{resultID}', [ExamController::class, 'getExam']);
+    Route::post('/exam/{resultID}/answer', [ExamController::class, 'saveAnswer']);
+    Route::post('/exam/{resultID}/finish', [ExamController::class, 'finishExam']);
+    Route::get('/exam/results', [ExamController::class, 'listResults']);
+    Route::get('/exam/results/{id}',[ExamController::class, 'result']);
 });
 

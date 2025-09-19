@@ -3,7 +3,7 @@ interface AnswerProp{
     value:string;
     active?:boolean;
     className?:string
-    onClick:()=>void;
+    onClick?:()=>void;
 }
 const Answer = ({value,active=false,className="",onClick}:AnswerProp) => {
   return (

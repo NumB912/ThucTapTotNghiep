@@ -5,17 +5,19 @@ import type { PracticeQuestion } from "../model/question";
 interface CardTopicPracticeProp {
   number: number;
   question: PracticeQuestion;
+  onSelectPractice:(id:number,ans:string)=>void
 }
 
-const CardTopicPractice = ({ question, number }: CardTopicPracticeProp) => {
+const CardTopicPractice = ({ question, number, onSelectPractice}: CardTopicPracticeProp) => {
   const [choose, setChoose] = useState("");
-
+  const [isCorrect, setIsCorrect] = useState(false);
   function handleChoose(chs: string) {
-    if (choose !== "") return; 
+    if (choose !== "") return;
     setChoose(chs);
+    const correct = chs === question.ansRight;
+    setIsCorrect(correct);
+    onSelectPractice(question.id,chs)
   }
-
-  const isCorrect = choose && question.ansRight === choose;
 
   return (
     <div className="w-full">
@@ -29,18 +31,19 @@ const CardTopicPractice = ({ question, number }: CardTopicPracticeProp) => {
             value={"A. " + question.ansa}
             onClick={() => handleChoose("A")}
             active={choose === "A"}
-            className="hover:bg-blue-200/50"
           />
           <Answer
             value={"B. " + question.ansb}
             onClick={() => handleChoose("B")}
             active={choose === "B"}
           />
-          <Answer
-            value={"C. " + question.ansc}
-            onClick={() => handleChoose("C")}
-            active={choose === "C"}
-          />
+          {question.ansc && (
+            <Answer
+              value={"C. " + question.ansc}
+              onClick={() => handleChoose("C")}
+              active={choose === "C"}
+            />
+          )}
           {question.ansd && (
             <Answer
               value={"D. " + question.ansd}
@@ -55,7 +58,9 @@ const CardTopicPractice = ({ question, number }: CardTopicPracticeProp) => {
         <div className="question-right-hint mt-3 flex flex-col gap-2">
           <p
             className={`p-2 rounded text-[10px] ${
-              isCorrect ? "bg-green-400 text-white" : "bg-red-400 text-white"
+              isCorrect
+                ? "border-green-400 border text-green-500"
+                : "border border-red-500 text-red-500"
             }`}
           >
             {isCorrect ? "Bạn đã chọn đúng" : "Bạn đã chọn sai"}
