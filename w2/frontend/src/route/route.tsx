@@ -34,7 +34,7 @@ const route = createBrowserRouter([
     element: <ExamDetail />,
   },
   {
-    path: "/result-index",
+    path: "/results/:id",
     element: <Results />,
   },{
     path: "/result/:id",

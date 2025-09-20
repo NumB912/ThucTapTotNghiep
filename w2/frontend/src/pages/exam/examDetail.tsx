@@ -202,7 +202,7 @@ const ExamDetail: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         console.log("Bài thi kết thúc, kết quả:", data);
-        navigate(`/result/${id}`);
+        navigate(`/results/${id}`);
       } else {
         const text = await response.text();
         console.error("Lỗi khi kết thúc bài thi:", response.status, text);
