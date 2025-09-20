@@ -44,40 +44,52 @@ class ExamController extends Controller
         ]);
     }
 
-    public function getExam($resultID)
+ public function getExam($resultID)
     {
-        $result = Result::findOrFail($resultID);
+        // Lấy bài thi và user
+        $result = Result::with('user')
+            ->findOrFail($resultID);
 
-        $questions = ResultQuestion::with('question')
+        // Lấy tất cả ResultQuestion và kèm Question + Topic
+        $questions = ResultQuestion::with(['question.topic'])
             ->where('resultID', $resultID)
             ->orderBy('id')
             ->get()
             ->map(function ($rq) {
                 return [
-                    'id'      => $rq->question->id,
-                    'title'   => $rq->question->title,
+                    'id' => $rq->question->id,
+                    'title' => $rq->question->title,
                     'content' => $rq->question->content,
-                    'audio'   => $rq->question->audio,
-                    'ansa'    => $rq->question->ansa,
-                    'ansb'    => $rq->question->ansb,
-                    'ansc'    => $rq->question->ansc,
-                    'ansd'    => $rq->question->ansd,
-                    'ansUser' => $rq->ansUser,
+                    'audio' => $rq->question->audio,
+                    'ansa' => $rq->question->ansa,
+                    'ansb' => $rq->question->ansb,
+                    'ansc' => $rq->question->ansc,
+                    'ansd' => $rq->question->ansd ?? null,
+                    'mandatory' => $rq->question->mandatory,
+                    'pos' => $rq->question->pos,
+                    'status' => $rq->question->status,
+                    'topic' => $rq->question->topic,
+                    'ansUser' => $rq->ansUser, // đáp án người dùng
+                    'answer' => $rq->question->answer ?? null, // nếu muốn lưu đáp án đúng
                 ];
             });
 
         return response()->json([
-            'id'          => $result->id,
-            'user'        => $result->user,
-            'score'       => $result->score,
-            'submittedAt' => $result->submitted_at,
-            'startAt'     => $result->startAt,
-            'endAt'       => $result->endAt,
-            'duration'    => $result->Duration,
-            'status'      => $result->status,
-            'questions'   => $questions,
+            'result' => [
+                'id' => $result->id,
+                'user' => $result->user,
+                'score' => $result->score,
+                'submittedAt' => $result->submitted_at,
+                'startAt' => $result->startAt,
+                'endAt' => $result->endAt,
+                'duration' => $result->Duration,
+                'status' => $result->status,
+            ],
+            'resultQuestions' => $questions,
         ]);
     }
+
+
 
 
 
@@ -104,10 +116,12 @@ class ExamController extends Controller
 
         $correct = 0;
         $MandatoryPass = true;
+        $questionQuatity = 0;
         foreach ($questions as $q) {
+                   $questionQuatity++;
             if ($q->ansUser && $q->ansUser === $q->question->ansRight) {
                 $correct++;
-            } else if ($q->mandatory) {
+            } else if ($q->question && $q->question->mandatory) {
                 $MandatoryPass = false;
             }
         }
@@ -116,34 +130,65 @@ class ExamController extends Controller
         $result->status = 'complete';
         $result->endAt = now();
         $result->Duration = now()->diffInMinutes($result->startAt);
+        $result->submitted_at = now();
+        $result->isPass = $correct >= 28 && $MandatoryPass;
+        $result->questionQuantity = $questionQuatity;
         $result->save();
-        $result->isPass = $correct > 28 && $MandatoryPass;
 
         return response()->json([
             $result
         ]);
     }
 
-    public function listResults()
+    public function Results()
     {
         $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(["message" => "vui lòng đăng nhập", 401]);
+        }
+
         $results = Result::where('userID', $user->id)->get();
 
         return response()->json($results);
     }
 
-public function result($resultID)
+public function result($id)
 {
-    $result = Result::find($resultID);
+    // Lấy kết quả
+    $result = Result::find($id);
 
+    if (!$result) {
+        return response()->json(['message' => 'Result không tồn tại'], 404);
+    }
+
+    // Lấy các câu hỏi kèm quan hệ question
     $resultQuestions = ResultQuestion::with('question')
-        ->where('resultID', $resultID)
+        ->where('resultID', $id)
         ->orderBy('id')
         ->get();
 
+    // Chuyển resultQuestions vào result.questions để frontend dùng trực tiếp
+    $questions = $resultQuestions->map(function ($rq) {
+        return [
+            'id' => $rq->question->id,
+            'title' => $rq->question->title,
+            'content' => $rq->question->content,
+            'audio' => $rq->question->audio,
+            'ansa' => $rq->question->ansa,
+            'ansb' => $rq->question->ansb,
+            'ansc' => $rq->question->ansc,
+            'ansd' => $rq->question->ansd,
+            'ansRight' => $rq->question->ansRight,
+            'ansUser' => $rq->ansUser, // đáp án người dùng chọn
+        ];
+    });
+
+    // Thêm vào object result
+    $result->questions = $questions;
+
     return response()->json([
-        'result' => $result,
-        'resultQuestions' => $resultQuestions,
+        'result' => $result
     ]);
 }
 

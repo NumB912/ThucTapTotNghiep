@@ -24,6 +24,8 @@ const CardTopicPractice = ({ question, number, onSelectPractice}: CardTopicPract
       <p className="font-bold text-blue-500">
         Câu {number} {question.mandatory ? "(Câu liệt)" : ""}. {question.title}
       </p>
+        {question?.content && <div className="content mt-5">{<img src={question?.content}></img>}</div>}
+
 
       <div className="questions mt-5">
         <div className="flex flex-col gap-1.5">

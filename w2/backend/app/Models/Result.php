@@ -14,15 +14,29 @@ class Result extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'userID', 'score', 'submitted_at', 'startAt', 'endAt', 'Duration', 'status','isPass'
+        'userID', 'score', 'submitted_at', 'startAt', 'endAt', 'Duration', 'status', 'isPass', 'wrong', 'questionQuantity'
+    ];
+
+    // Thêm casts để JSON ra đúng kiểu
+    protected $casts = [
+        'score' => 'integer',
+        'isPass' => 'boolean',
+        'wrong' => 'integer',
+        'questionQuantity' => 'integer',
+        'startAt' => 'datetime',
+        'endAt' => 'datetime',
+        'submitted_at' => 'datetime',
+        'Duration' => 'integer',
     ];
 
     public function user() {
         return $this->belongsTo(User::class, 'userID');
     }
+
     public function resultQuestions() {
         return $this->hasMany(ResultQuestion::class, 'resultID');
     }
+
     public function questions() {
         return $this->belongsToMany(
             Question::class,
@@ -32,4 +46,3 @@ class Result extends Model
         )->withPivot('ansUser');
     }
 }
-

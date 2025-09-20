@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ExamController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\TopicController;
@@ -37,14 +38,16 @@ Route::get('/users',[UserController::class,'index']);
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/image/{filename}', [ImageController::class, 'show']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
-
 Route::middleware('auth:sanctum')->group(function() {
-    Route::post('/exam/start', [ExamController::class, 'startExam']);
+   Route::post('/exam/start', [ExamController::class, 'startExam']);
+
+    Route::get('/exam/results', [ExamController::class, 'Results']);
+    Route::get('/exam/results/{id}', [ExamController::class, 'result']);
+
     Route::get('/exam/{resultID}', [ExamController::class, 'getExam']);
     Route::post('/exam/{resultID}/answer', [ExamController::class, 'saveAnswer']);
     Route::post('/exam/{resultID}/finish', [ExamController::class, 'finishExam']);
-    Route::get('/exam/results', [ExamController::class, 'listResults']);
-    Route::get('/exam/results/{id}',[ExamController::class, 'result']);
 });
 

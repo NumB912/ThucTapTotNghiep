@@ -53,6 +53,10 @@ const PracticeTopic = () => {
               ? `CHƯƠNG ${practices[0].topic.id}. ${practices[0].topic.title}`
               : ""}
           </p>
+
+          
+           
+
           <div className="py-2 flex justify-between items-center">
             <button
               onClick={() => navigate(-1)}
@@ -71,12 +75,16 @@ const PracticeTopic = () => {
 
         <div className="flex flex-col w-full gap-5">
           {practices.map((practice, index) => (
+            <>
+           
             <CardTopicPractice
               key={practice.id}
               number={index + 1}
               question={practice}
               onSelectPractice={handleSelectAnswer}
             />
+            </>
+           
           ))}
         </div>
       </div>
