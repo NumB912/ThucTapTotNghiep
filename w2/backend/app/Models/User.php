@@ -12,22 +12,22 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $table = 'User';
+    protected $table = 'user';
     protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
-        'userName',
+        'username',
         'password',
         'name',
         'email',
-        'createAt',
-        'updateAt'
+        'create_at',
+        'update_at'
     ];
 
     public function results()
     {
-        return $this->hasMany(Result::class, 'userID');
+        return $this->hasMany(Result::class, 'userid');
     }
 
     protected $hidden = ['password'];

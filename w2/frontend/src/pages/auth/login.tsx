@@ -5,7 +5,7 @@ import { useUserContext } from "../../context/userContext";
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
+  const [userName, setuserName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const {setToken} = useUserContext();
@@ -20,7 +20,7 @@ const SignIn = () => {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({ userName, password }),
+        body: JSON.stringify({"username": userName,"password": password }),
       });
 
 
@@ -59,7 +59,7 @@ const SignIn = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
               placeholder="userName"
               value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              onChange={(e) => setuserName(e.target.value)}
             />
           </div>
 

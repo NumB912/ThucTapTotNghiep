@@ -1,13 +1,13 @@
 import React from "react";
 import { createBrowserRouter } from "react-router";
-import Results from "../pages/exam/result/results";
+import Results from "../pages/exam/result/result";
 import Home from "../pages/home";
 import Practice from "../pages/practice/practice";
 import Exams from "../pages/exam/exams";
 import Root from "../pages/root";
 import PracticeTopic from "../pages/practice/practiceTopic";
 import ExamDetail from "../pages/exam/examDetail";
-import Result from "../pages/exam/result/result";
+import Result from "../pages/exam/result/resultDetail";
 import SignUp from "../pages/auth/SignUp"
 import SignIn from "../pages/auth/login"
 const route = createBrowserRouter([

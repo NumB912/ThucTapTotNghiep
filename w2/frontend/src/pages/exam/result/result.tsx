@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
+import Button from "../../../component/ui/Button";
 import { useNavigate, useParams } from "react-router";
-import { FaArrowLeft } from "react-icons/fa";
-import type { Result, ResultAnwser } from "../../../model/result";
 import { useUserContext } from "../../../context/userContext";
-import Answer from "../../../component/ans";
+import type { Result } from "../../../model/result";
 
 const Result = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [questionResult, setQuestionResult] = useState<ResultAnwser>();
+  const [Result, setResult] = useState<Result>();
   const { token } = useUserContext();
+
   useEffect(() => {
     async function getResult() {
       if (!token) {
@@ -19,16 +19,19 @@ const Result = () => {
       }
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/api/exam/results/${id}`,
+          `http://127.0.0.1:8000/api/results/${id}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { 
+               "Content-Type": "application/json",
+              Accept: "application/json",
+              Authorization: `Bearer ${token}` },
           }
         );
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data.result);
-          setQuestionResult(data.result);
+          console.log("Kết quả API:", data);
+          setResult(data.result);
         }
       } catch (e) {
         console.error("Lỗi lấy kết quả:", e);
@@ -39,97 +42,58 @@ const Result = () => {
   }, [id, token]);
 
   return (
-    <div className="flex items-center justify-center bg-gray-100">
-      <div className="exam-content flex flex-col gap-2 bg-white w-9/10 h-9/10 border border-gray-100 rounded-sm p-5 shadow-sm">
-        <div className="info">
-          <div className="py-2 flex justify-between items-center">
-            <button
-              onClick={() => navigate("/")}
-              className="p-2 rounded-full hover:bg-gray-200 w-fit"
-            >
-              <FaArrowLeft />
-            </button>
-
-            <div className="flex gap-3">
-              <p className="text-[10px]">
-                Số lượng câu:{" "}
-                <span className="font-bold text-blue-500">
-                  {questionResult?.questionQuantity}
-                </span>
+    <div className="flex items-center justify-center  h-screen">
+      <div className="exam-content max-w-sm w-full flex flex-col gap-2 bg-white border border-gray-100 rounded-sm p-5 shadow-sm">
+        <p className="w-full font-bold text-center text-xl">Kiểm tra kết thúc</p>
+        <div className="flex flex-col gap-2 items-center justify-center ">
+          <p className="text-[10px] text-center font-bold bg-green-400 text-white rounded p-1">
+            Xin chúc mừng bạn đã đạt
+          </p>
+          <div className="w-full">
+            <div className="score flex justify-between items-center text-[11px]">
+              <p>Điểm số:</p>
+              <p className="font-bold text-blue-500">
+                {Result?.score ?? "-"}
               </p>
+            </div>
 
-              <p className="text-[10px]">
-                Số lượng câu đúng:{" "}
-                <span className="font-bold text-green-500">
-                  {questionResult?.score}
-                </span>
+            <div className="score flex justify-between items-center text-[11px]">
+              <p>Số câu đúng:</p>
+              <p className="font-bold text-green-300">
+                {Result?.score ?? "-"}
               </p>
+            </div>
 
-              <p className="text-[10px]">
-                Số lượng câu sai:{" "}
-                <span className="font-bold text-red-500">
-                  {(questionResult?.questionQuantity ?? 0) -
-                    (questionResult?.score ?? 0)}
-                </span>
+            <div className="score flex justify-between items-center text-[11px]">
+              <p>Số câu sai:</p>
+              <p className="font-bold text-red-400">
+                
+                  {Result?.question_quantity != null && Result?.score != null
+                    ? Result.question_quantity - Result.score
+                    : "-"}
+              </p>
+            </div>
+
+            <div className="score flex justify-between items-center text-[11px]">
+              <p>Kết quả</p>
+              <p
+                className={`font-bold ${
+                  Result?.ispass ? "text-green-400" : "text-red-400"
+                }`}
+              >
+                {Result?.ispass ? "Đạt" : "Chưa đạt"}
               </p>
             </div>
           </div>
-        </div>
 
-        <div className="flex flex-col w-full gap-5">
-          {questionResult?.questions.map((qr, idx) => (
-            <div key={idx} className="w-full">
-              <p className="font-bold text-blue-500">
-                Câu {idx + 1} {qr.mandatory ? "(Câu liệt)" : ""}. {qr.title}
-              </p>
-
-              {qr.content &&
-                <div className="content">
-
-                  {<img src={qr.content}/>}
-
-              </div>
-              }
-
-              <div className="questions mt-5">
-                <div className="flex flex-col gap-1.5">
-                  {["A", "B", "C", "D"].map((opt) => {
-                    const ansText =
-                      qr[`ans${opt.toLowerCase()}` as keyof typeof qr];
-                    if (!ansText) return null;
-
-                    const isUser = qr.ansUser === opt; // đáp án người dùng chọn
-                    const isRight = qr.ansRight === opt; // đáp án đúng
-                    console.log(idx + " " + qr.ansRight + " " + qr.ansUser);
-                    let active = false;
-                    let colorClass = "";
-
-                    if (isUser && isRight) {
-                      // chọn đúng
-                      active = true;
-                      colorClass = "bg-green-400";
-                    } else if (isUser && !isRight) {
-                      // chọn sai
-                      active = true;
-                      colorClass = "bg-red-400";
-                    } else if (!isUser && isRight) {
-                      // đáp án đúng mà không chọn
-                      colorClass = "bg-green-100";
-                    }
-
-                    return (
-                      <Answer
-                        key={opt}
-                        value={`${opt}. ${ansText}`}
-                        active={active}
-                        className={colorClass}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          ))}
+          <Button
+            onClick={() => {
+              navigate("/exams");
+            }}
+            className="w-full font-bold text-[10px] "
+          >
+            Hoàn thành
+          </Button>
         </div>
       </div>
     </div>

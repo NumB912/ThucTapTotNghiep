@@ -13,19 +13,7 @@ export interface Question {
   pos: number;
   status: string;
   topic: Topic;
-}
-
-export interface PracticeQuestion extends Question {
-  ansHint: string;
-  ansRight: "A" | "B" | "C" | "D";
-  answer: string;
-}
-
-export interface ResultQuestion extends Question{
-  ansRight: "A" | "B" | "C" | "D";
-  answer: string;
-}
-
-export interface ExamQuestion extends Question {
-  answer:string;
+  anshint?:string,
+  ansright?:string,
+  ansuser?:string
 }

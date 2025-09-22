@@ -1,7 +1,7 @@
 import React from "react";
 
 interface ExamCardProps {
-  date: string;
+  date: Date;
   score: number;
   correct: number;
   wrong: number;
@@ -10,7 +10,7 @@ interface ExamCardProps {
 }
 
 const ScoreRow: React.FC<{ label: string; value: string | number; color?: string }> = ({ label, value, color }) => (
-  <div className="flex justify-between items-center text-[11px]">
+  <div className="flex justify-between items-center text-[13px]">
     <p>{label}</p>
     <p className={`font-bold ${color}`}>{value}</p>
   </div>
@@ -20,12 +20,13 @@ const ExamCard: React.FC<ExamCardProps> = ({ date, score, correct, wrong, result
   return (
     <div
       onClick={onClick}
-      className="p-2 border border-gray-300 cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-150"
+      className="p-2 border relative border-gray-300 cursor-pointer rounded hover:shadow-lg hover:scale-105 transition-all duration-150"
     >
       <div className="flex flex-col h-full gap-2 items-center justify-start">
       <div className="date w-full font-bold">
-         <p>Bài thi ngày: {new Date(date).toLocaleDateString()}</p>
-       <p>Giờ thi: {new Date(date).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</p>
+        {result ? <div className=" bg-green-400  p-0.5"></div>:<div className=" bg-red-500 h-1 my-1 rounded"></div>}
+        <p className="text-lg">Bài thi ngày: {new Date(date).toLocaleDateString()}</p>
+        <p className="text-sm font-medium text-blue-500">Giờ thi: {new Date(date).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</p>
       </div>
         <div className="w-full">
           <ScoreRow label="Điểm số:" value={score} color="text-blue-500" />

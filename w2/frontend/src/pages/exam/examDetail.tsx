@@ -6,30 +6,29 @@ import Button from "../../component/ui/Button";
 import Answer from "../../component/ans";
 import { useUserContext } from "../../context/userContext";
 import type { Result } from "../../model/result";
-import type { ExamQuestion } from "../../model/question";
+import type { Question } from "../../model/question";
+import { diffTime, formatTime } from "../../utils/time";
 
 const ExamDetail: React.FC = () => {
   const navigate = useNavigate();
   const { token } = useUserContext();
   const { id } = useParams();
-
-  const [exam, setExam] = useState<Result>();
-  const [question, setQuestion] = useState<ExamQuestion>();
+  const [result, setResult] = useState<Result>();
+  const [question, setQuestion] = useState<Question>();
   const [idActive, setIdActive] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedAnswers, setSelectedAnswers] = useState<{
-    [key: number]: string;
-  }>({});
-  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [selectLoading, setSelectloading] = useState<boolean>(false);
+  const [selectedAnswers, setSelectedAnswers] = useState<{[key: number]: string;}>({});
+  const [timeLeft, setTimeLeft] = useState<Date>(new Date());
 
   useEffect(() => {
-    if(!token){
-      alert("Vui lòng đăng nhập")
-      navigate("/")
+    if (!token) {
+      alert("Vui lòng đăng nhập");
+      navigate("/");
       return;
     }
 
-    async function getExam() {
+    async function getresult() {
       if (!token || !id) return;
       try {
         const response = await fetch(`http://127.0.0.1:8000/api/exam/${id}`, {
@@ -42,54 +41,35 @@ const ExamDetail: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
 
-          const questions: ExamQuestion[] = data.resultQuestions.map(
-            (rq: any) => ({
-              id: rq.id,
-              title: rq.title,
-              content: rq.content,
-              audio: rq.audio,
-              ansa: rq.ansa,
-              ansb: rq.ansb,
-              ansc: rq.ansc,
-              ansd: rq.ansd,
-              mandatory: rq.mandatory,
-              pos: rq.pos,
-              status: rq.status,
-              topic: rq.topic,
-              answer: rq.ansUser || "",
-            })
-          );
-
-          setExam({
+          setResult({
             id: data.result.id,
             user: data.result.user,
             score: data.result.score,
-            submittedAt: data.result.submittedAt
-              ? new Date(data.result.submittedAt)
-              : undefined,
-            startAt: data.result.startAt
-              ? new Date(data.result.startAt)
-              : undefined,
-            endAt: data.result.endAt ? new Date(data.result.endAt) : undefined,
-            duration: data.result.duration, // phút
+            submitted_at: data.result.submitted_at
+              ? new Date(data.result.submitted_at)
+              : new Date(),
+            start_at: data.result.start_at
+              ? new Date(data.result.start_at)
+              : new Date(),
+            end_at: data.result.endAt
+              ? new Date(data.result.endAt)
+              : new Date(),
+            duration: data.result.duration,
             status: data.result.status,
-            questions,
+            questions: data.questions,
+            ispass: data.result.ispass ?? false,
+            question_quantity:
+              data.result.question_quantity ??
+              (data.questions ? data.questions.length : 0),
           });
 
-          if (questions.length > 0) {
-            setQuestion(questions[0]);
-            setIdActive(questions[0].id);
-          }
-
-          // Khởi tạo selectedAnswers
-          const answers: { [key: number]: string } = {};
-          questions.forEach((q) => {
-            if (q.answer) answers[q.id] = q.answer;
-          });
-          setSelectedAnswers(answers);
-
-          if (data.result.duration) {
-            setTimeLeft(data.result.duration * 60);
+          setQuestion(data.questions[0]);
+          setIdActive(data.questions[0].id);
+          if (data.result.start_at && data.result.end_at) {
+            const timeStart = data.result.start_at as Date;
+            const timeEnd = data.result.end_at as Date;
+            const diff = diffTime(timeStart, timeEnd);
+            setTimeLeft(diff);
           }
         }
       } catch (e) {
@@ -99,11 +79,11 @@ const ExamDetail: React.FC = () => {
       }
     }
 
-    getExam();
+    getresult();
   }, [id, token]);
 
   useEffect(() => {
-    if (timeLeft <= 0) return;
+    if (formatTime(timeLeft)) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -119,24 +99,14 @@ const ExamDetail: React.FC = () => {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  function formatTime(seconds: number) {
-    const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-    return `${min.toString().padStart(2, "0")}:${sec
-      .toString()
-      .padStart(2, "0")}`;
-  }
-
-  function handleSelectQuestion(q: ExamQuestion) {
+  function handleSelectQuestion(q: Question) {
     setQuestion(q);
     setIdActive(q.id);
   }
 
-  async function handleSelectAnswer(questionID: number, ansUser: string) {
+  async function handleSelectAnswer(questionid: number, ansuser: string) {
     if (!token || !id) return;
-
-    setSelectedAnswers((prev) => ({ ...prev, [questionID]: ansUser }));
-
+    setSelectloading(true);
     try {
       const response = await fetch(
         `http://127.0.0.1:8000/api/exam/${id}/answer`,
@@ -147,14 +117,18 @@ const ExamDetail: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            answers: [{ questionID, ansUser }],
+            questionid,
+            ansuser,
           }),
         }
       );
 
       if (!response.ok) {
-        const text = await response.text();
+        const text = await response.json();
         console.error("Lỗi lưu đáp án:", response.status, text);
+      } else {
+        setSelectloading(false);
+        setSelectedAnswers((prev) => ({ ...prev, [questionid]: ansuser }));
       }
     } catch (err) {
       console.error("Lỗi khi lưu đáp án:", err);
@@ -162,11 +136,11 @@ const ExamDetail: React.FC = () => {
   }
 
   function handlePrevNext(step: number) {
-    if (!exam || !question) return;
-    const idx = exam.questions.findIndex((q) => q.id === question.id);
+    if (!result || !question) return;
+    const idx = result.questions.findIndex((q) => q.id === question.id);
     const newIndex = idx + step;
-    if (newIndex >= 0 && newIndex < exam.questions.length) {
-      const newQuestion = exam.questions[newIndex];
+    if (newIndex >= 0 && newIndex < result.questions.length) {
+      const newQuestion = result.questions[newIndex];
       setQuestion(newQuestion);
       setIdActive(newQuestion.id);
     }
@@ -176,8 +150,8 @@ const ExamDetail: React.FC = () => {
     if (!id || !token) return;
 
     if (
-      exam?.questions &&
-      Object.keys(selectedAnswers).length < exam.questions.length
+      result?.questions &&
+      Object.keys(selectedAnswers).length < result.questions.length
     ) {
       if (
         !window.confirm(
@@ -201,8 +175,8 @@ const ExamDetail: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Bài thi kết thúc, kết quả:", data);
-        navigate(`/results/${id}`);
+        console.log(data);
+        navigate(`/results/${data.id}`);
       } else {
         const text = await response.text();
         console.error("Lỗi khi kết thúc bài thi:", response.status, text);
@@ -214,15 +188,14 @@ const ExamDetail: React.FC = () => {
 
   return !loading ? (
     <div className="flex items-center justify-center bg-gray-100 min-h-screen">
-      <div className="exam-content flex flex-col gap-2 bg-white w-[90%] h-[90%] border border-gray-100 rounded-sm p-5 shadow-sm">
-        {/* Info */}
+      <div className="result-content flex flex-col gap-2 bg-white w-[90%] h-[90%] border border-gray-100 rounded-sm p-5 shadow-sm">
         <div className="info">
           <div className="py-2 flex justify-between items-center">
             <div className="flex gap-3 text-[10px]">
               <p>
                 Số lượng câu:{" "}
                 <span className="font-bold text-blue-500">
-                  {exam?.questions.length}
+                  {result?.questions.length}
                 </span>
               </p>
               <p>
@@ -234,8 +207,8 @@ const ExamDetail: React.FC = () => {
               <p>
                 Chưa hoàn thành:{" "}
                 <span className="font-bold text-blue-500">
-                  {exam
-                    ? exam.questions.length -
+                  {result
+                    ? result.questions.length -
                       Object.keys(selectedAnswers).length
                     : 0}
                 </span>
@@ -243,16 +216,16 @@ const ExamDetail: React.FC = () => {
               <p>
                 Ngày thi:{" "}
                 <span className="font-bold text-blue-500">
-                  {exam?.startAt
-                    ? new Date(exam.startAt).toLocaleDateString()
+                  {result?.start_at
+                    ? new Date(result.start_at).toLocaleDateString()
                     : "-"}
                 </span>
               </p>
               <p>
                 Giờ thi:{" "}
                 <span className="font-bold text-blue-500">
-                  {exam?.startAt
-                    ? new Date(exam.startAt).toLocaleTimeString("vi-VN", {
+                  {result?.start_at
+                    ? new Date(result.start_at).toLocaleTimeString("vi-VN", {
                         hour: "2-digit",
                         minute: "2-digit",
                       })
@@ -269,10 +242,10 @@ const ExamDetail: React.FC = () => {
             <div
               className="progress bg-blue-500 h-full rounded"
               style={{
-                width: exam
+                width: result
                   ? `${
                       (Object.keys(selectedAnswers).length /
-                        exam.questions.length) *
+                        result.questions.length) *
                       100
                     }%`
                   : "0%",
@@ -285,12 +258,12 @@ const ExamDetail: React.FC = () => {
         <div className="flex w-full mt-5">
           <div className="left-content max-w-[240px] w-full h-full flex flex-col items-center justify-between gap-3 border border-gray-200 rounded p-3 shadow">
             <div className="questions w-full grid grid-cols-7 gap-1">
-              {exam?.questions.map((q, index) => (
+              {result?.questions.map((q, index) => (
                 <Item
                   key={q.id}
                   number={index + 1}
                   onToggle={() => handleSelectQuestion(q)}
-                  isDone={!!selectedAnswers[q.id] || !!q.answer}
+                  isDone={!!selectedAnswers[q.id] || !!q.ansuser}
                   active={q.id === idActive}
                 />
               ))}
@@ -305,20 +278,25 @@ const ExamDetail: React.FC = () => {
           <div className="right-content w-full ml-5">
             <p className="font-bold text-blue-500">
               Câu{" "}
-              {exam?.questions && question?.id !== undefined
-                ? exam.questions.findIndex((q) => q.id === question.id) + 1
+              {result?.questions && question?.id !== undefined
+                ? result.questions.findIndex((q) => q.id === question.id) + 1
                 : ""}
               : {question?.title}
             </p>
 
             {question?.content && (
               <div className="content mt-5">
-                {<img src={question?.content}></img>}
+                {
+                  <img
+                    src={`${"http://127.0.0.1:8000/api"}${question?.content}`}
+                    alt="question"
+                  />
+                }
               </div>
             )}
 
             <div className="questions mt-5 flex flex-col gap-1.5">
-              {question && (
+              {question && !selectLoading && (
                 <>
                   <Answer
                     value={question.ansa}

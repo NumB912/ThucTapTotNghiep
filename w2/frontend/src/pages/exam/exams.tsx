@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaPlus } from "react-icons/fa";
 import ExamCard from "../../component/examCard";
 import { useUserContext } from "../../context/userContext";
 import type { Result } from "../../model/result";
+
 
 const Exams: React.FC = () => {
   const navigate = useNavigate();
   const [results, setResults] = useState<Result[]>([]);
   const { token } = useUserContext();
-  const [loading,setLoading] = useState<boolean>(true)
-
+  const [loading, setLoading] = useState<boolean>(true);
   async function handleCreateNewExam() {
+
     if (!token) {
-       navigate("/");
-      return;}
+      navigate("/");
+      return;
+    }
 
     try {
       const response = await fetch("http://127.0.0.1:8000/api/exam/start", {
@@ -27,7 +29,7 @@ const Exams: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        navigate(`/exams/exam/${data.resultID}`);
+        navigate(`/exams/exam/${data.resultid}`);
       } else {
         const text = await response.text();
         console.error("Tạo bài thi thất bại:", response.status, text);
@@ -36,16 +38,15 @@ const Exams: React.FC = () => {
       console.error("Lỗi khi tạo bài thi:", err);
     }
   }
-
   useEffect(() => {
     async function getResults() {
       if (!token) {
-        alert("Vui lòng đăng nhập")
+        alert("Vui lòng đăng nhập");
         navigate("/");
-        return;}
-
+        return;
+      }
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/exam/results", {
+        const response = await fetch("http://127.0.0.1:8000/api/results", {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -53,24 +54,39 @@ const Exams: React.FC = () => {
           },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          setResults(data);
-          setLoading(false)
+        if (!response.ok) {
+          const err = await response.json();
+          console.error("Error:", err);
+          return;
         }
+
+        const data = await response.json();
+        setResults(data);
+        setLoading(false);
       } catch (e) {
-        console.error(e);
+        console.error("Fetch error:", e);
       }
     }
 
     getResults();
-  }, [token]);
+  }, [token, navigate]);
 
-return (
-  loading ? (
+  return loading ? (
     <div className="flex items-center justify-center w-full h-10">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50" width="50" height="25">
-        <circle fill="#3B82F6" stroke="#3B82F6" strokeWidth="5" r="5" cx="20" cy="16">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 100 50"
+        width="50"
+        height="25"
+      >
+        <circle
+          fill="#3B82F6"
+          stroke="#3B82F6"
+          strokeWidth="5"
+          r="5"
+          cx="20"
+          cy="16"
+        >
           <animate
             attributeName="cy"
             calcMode="spline"
@@ -81,7 +97,14 @@ return (
             begin="-.5s"
           />
         </circle>
-        <circle fill="#3B82F6" stroke="#3B82F6" strokeWidth="5" r="5" cx="50" cy="16">
+        <circle
+          fill="#3B82F6"
+          stroke="#3B82F6"
+          strokeWidth="5"
+          r="5"
+          cx="50"
+          cy="16"
+        >
           <animate
             attributeName="cy"
             calcMode="spline"
@@ -92,7 +115,14 @@ return (
             begin="-.2s"
           />
         </circle>
-        <circle fill="#3B82F6" stroke="#3B82F6" strokeWidth="5" r="5" cx="80" cy="16">
+        <circle
+          fill="#3B82F6"
+          stroke="#3B82F6"
+          strokeWidth="5"
+          r="5"
+          cx="80"
+          cy="16"
+        >
           <animate
             attributeName="cy"
             calcMode="spline"
@@ -117,7 +147,7 @@ return (
       <div className="h-full grid grid-cols-5 gap-3">
         {results?.map((result) => {
           const now = new Date();
-          const endTime = new Date(result.endAt);
+          const endTime = new Date(result.end_at);
           const canContinue = result.status === "progressing" && now < endTime;
 
           if (canContinue) {
@@ -134,27 +164,28 @@ return (
             return (
               <ExamCard
                 key={result.id}
-                date={result.startAt}
-                score={parseFloat((result.score * 1 / 3).toFixed(2))}
+                date={result.start_at}
+                score={parseFloat(((result.score * 1) / 3).toFixed(2))}
                 correct={result.score}
-                wrong={result.questionQuantity - result.score}
-                result={result.isPass}
+                wrong={result.question_quantity - result.score}
+                result={result.ispass}
                 onClick={() => navigate(`/result/${result.id}`)}
               />
+
             );
           }
         })}
 
-        <button
-          className="p-3 border border-gray-300 cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-150"
+                <button
+          className="p-5 border border-gray-300 cursor-pointer font-bold  hover:shadow-lg hover:scale-105 transition-all duration-150"
           onClick={handleCreateNewExam}
         >
-          Tạo bài thi mới
+        <div className="flex items-center justify-center gap-3"><FaPlus/>
+          Tạo bài thi mới</div> 
         </button>
       </div>
     </div>
-  )
-);
+  );
 };
 
 export default Exams;

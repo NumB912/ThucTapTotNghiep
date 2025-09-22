@@ -28,26 +28,23 @@ Route::get('/questions/{id}', [QuestionController::class, 'show']);
 Route::put('/questions/{id}', [QuestionController::class, 'update']);
 Route::delete('/questions/{id}', [QuestionController::class, 'destroy']);
 
-Route::get('/results',[ResultController::class,'index']);
-Route::get('/results/{id}',[ResultController::class,'getResultUser']);
+Route::get('/results', [ResultController::class, 'index']);
 
-Route::get('/topics',[TopicController::class,'index']);
-Route::get('/topic/{id}/question',[TopicController::class,'questionTopic']);
+Route::get('/topics', [TopicController::class, 'index']);
+Route::get('/topic/{id}/question', [TopicController::class, 'questionTopic']);
 
-Route::get('/users',[UserController::class,'index']);
+Route::get('/users', [UserController::class, 'index']);
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/image/{filename}', [ImageController::class, 'show']);
+Route::get('/public/images/{filename}', [ImageController::class, 'show']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
-Route::middleware('auth:sanctum')->group(function() {
-   Route::post('/exam/start', [ExamController::class, 'startExam']);
-
-    Route::get('/exam/results', [ExamController::class, 'Results']);
-    Route::get('/exam/results/{id}', [ExamController::class, 'result']);
-
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/exam/start', [ExamController::class, 'startExam']);
     Route::get('/exam/{resultID}', [ExamController::class, 'getExam']);
     Route::post('/exam/{resultID}/answer', [ExamController::class, 'saveAnswer']);
     Route::post('/exam/{resultID}/finish', [ExamController::class, 'finishExam']);
-});
 
+    Route::get('/results', [ResultController::class, 'getResultUser']);
+    Route::get('/results/{id}',[ResultController::class,'result']);
+});

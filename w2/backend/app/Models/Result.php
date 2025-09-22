@@ -9,40 +9,33 @@ class Result extends Model
 {
     use HasFactory;
 
-    protected $table = 'Results';
+    protected $table = 'results';
     protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
-        'userID', 'score', 'submitted_at', 'startAt', 'endAt', 'Duration', 'status', 'isPass', 'wrong', 'questionQuantity'
+        'userid', 'score', 'submitted_at', 'start_at', 'end_at', 'duration', 'status', 'ispass', 'question_quantity'
     ];
 
-    // Thêm casts để JSON ra đúng kiểu
-    protected $casts = [
-        'score' => 'integer',
-        'isPass' => 'boolean',
-        'wrong' => 'integer',
-        'questionQuantity' => 'integer',
-        'startAt' => 'datetime',
-        'endAt' => 'datetime',
-        'submitted_at' => 'datetime',
-        'Duration' => 'integer',
+      protected $casts = [
+        'ispass' => 'boolean', 
     ];
+
 
     public function user() {
-        return $this->belongsTo(User::class, 'userID');
+        return $this->belongsTo(User::class, 'userid');
     }
 
     public function resultQuestions() {
-        return $this->hasMany(ResultQuestion::class, 'resultID');
+        return $this->hasMany(ResultQuestion::class, 'resultid');
     }
 
     public function questions() {
         return $this->belongsToMany(
             Question::class,
-            'Result_Question',
-            'resultID',
-            'questionID'
-        )->withPivot('ansUser');
+            'results_questions',
+            'resultid',
+            'questionid'
+        )->withPivot('ansuser');
     }
 }

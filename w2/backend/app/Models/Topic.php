@@ -9,7 +9,7 @@ class Topic extends Model
 {
     use HasFactory;
 
-    protected $table = 'Topics';
+    protected $table = 'topics';
 
     protected $primaryKey = 'id';
 
@@ -18,7 +18,7 @@ class Topic extends Model
     protected $fillable = [
         'title',
         'description',
-        'featureImg',
+        'featureimg',
         'parent',
         'pos',
         'status',

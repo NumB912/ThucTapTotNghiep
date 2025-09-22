@@ -9,13 +9,13 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $table = 'Questions';
+    protected $table = 'questions';
     protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
         'title', 'content', 'audio', 'ansa', 'ansb', 'ansc', 'ansd',
-        'ansRight', 'ansHint', 'mandatory', 'pos', 'status', 'topic_id'
+        'ansright', 'anshint', 'mandatory', 'pos', 'status', 'topic_id'
     ];
 
 
@@ -24,15 +24,15 @@ class Question extends Model
     }
 
     public function resultQuestions() {
-        return $this->hasMany(ResultQuestion::class, 'questionID');
+        return $this->hasMany(ResultQuestion::class, 'questionid');
     }
 
     public function results() {
         return $this->belongsToMany(
             Result::class,
-            'Result_Question',
-            'questionID',
-            'resultID'
+            'results_questions',
+            'questionid',
+            'resultid'
         )->withPivot('ansUser');
     }
 }

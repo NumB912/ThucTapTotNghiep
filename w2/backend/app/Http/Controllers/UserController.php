@@ -14,10 +14,10 @@ class UserController extends Controller
         );
     }
 
-    public function userResults($userId)
+    public function userResults($userid)
     {
         $results = Result::with(['resultQuestions.question.topic'])
-            ->where('userID', $userId)
+            ->where('userid', $userid)
             ->get();
 
         return response()->json($results);

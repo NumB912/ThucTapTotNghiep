@@ -11,11 +11,11 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'userName' => 'required|string',
+            'username' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $user = User::where('userName', $request->userName)->first();
+        $user = User::where('username', $request->username) ->first();
 
         if (!$user) {
             return response()->json(['message' => 'Sai tên đăng nhập'], 401);
@@ -37,7 +37,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'userName' => 'required|string|unique:User,userName',
+            'username' => 'required|string|unique:User,username',
             'password' => 'required|string|min:6',
             'name'     => 'required|string',
             'email'    => 'required|email|unique:User,email',
@@ -45,7 +45,7 @@ class AuthController extends Controller
 
         try {
             $user = User::create([
-                'userName' => $validated['userName'],
+                'username' => $validated['username'],
                 'password' => Hash::make($validated['password']),
                 'name'     => $validated['name'],
                 'email'    => $validated['email'],

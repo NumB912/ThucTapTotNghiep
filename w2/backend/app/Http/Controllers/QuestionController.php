@@ -52,7 +52,6 @@ class QuestionController extends Controller
         return response()->json($question);
     }
 
-    // Cập nhật câu hỏi
     public function update(Request $request, $id)
     {
         $question = Question::find($id);

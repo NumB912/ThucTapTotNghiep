@@ -9,19 +9,19 @@ class ResultQuestion extends Model
 {
     use HasFactory;
 
-    protected $table = 'Result_Question';
+    protected $table = 'results_questions';
     protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
-        'questionID', 'resultID', 'ansUser'
+        'questionid', 'resultid', 'ansuser'
     ];
 
     public function result() {
-        return $this->belongsTo(Result::class, 'resultID');
+        return $this->belongsTo(Result::class, 'resultid');
     }
 
     public function question() {
-        return $this->belongsTo(Question::class, 'questionID');
+        return $this->belongsTo(Question::class, 'questionid');
     }
 }

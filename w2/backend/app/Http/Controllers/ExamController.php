@@ -22,37 +22,37 @@ class ExamController extends Controller
         $questions = Question::inRandomOrder()->limit(30)->get();
 
         $result = Result::create([
-            'userID' => $user->id,
+            'userid' => $user->id,
             'score' => 0,
-            'startAt' => date('Y-m-d H:i:s'),
-            'endAt' => date('Y-m-d H:i:s', strtotime('+30 minutes')),
-            'Duration' => 30,
+            'start_at' => date('Y-m-d H:i:s'),
+            'end_at' => date('Y-m-d H:i:s', strtotime('+30 minutes')),
+            'duration' => 30,
             'status' => 'progressing',
+            'ispass' => false,
+            'question_quantity' => 30,
         ]);
 
         foreach ($questions as $q) {
             ResultQuestion::create([
-                'questionID' => $q->id,
-                'resultID' => $result->id,
+                'questionid' => $q->id,
+                'resultid' => $result->id,
                 'ansUser' => null,
             ]);
         }
 
         return response()->json([
-            'resultID' => $result->id,
+            'resultid' => $result->id,
             'questions' => $questions
         ]);
     }
 
- public function getExam($resultID)
+    public function getExam($result_id)
     {
-        // Lấy bài thi và user
         $result = Result::with('user')
-            ->findOrFail($resultID);
+            ->findOrFail($result_id);
 
-        // Lấy tất cả ResultQuestion và kèm Question + Topic
         $questions = ResultQuestion::with(['question.topic'])
-            ->where('resultID', $resultID)
+            ->where('resultid', $result_id)
             ->orderBy('id')
             ->get()
             ->map(function ($rq) {
@@ -69,8 +69,7 @@ class ExamController extends Controller
                     'pos' => $rq->question->pos,
                     'status' => $rq->question->status,
                     'topic' => $rq->question->topic,
-                    'ansUser' => $rq->ansUser, // đáp án người dùng
-                    'answer' => $rq->question->answer ?? null, // nếu muốn lưu đáp án đúng
+                    'ansuser' => $rq->ansuser,
                 ];
             });
 
@@ -79,13 +78,13 @@ class ExamController extends Controller
                 'id' => $result->id,
                 'user' => $result->user,
                 'score' => $result->score,
-                'submittedAt' => $result->submitted_at,
-                'startAt' => $result->startAt,
-                'endAt' => $result->endAt,
+                'submitted_at' => $result->submitted_at,
+                'start_at' => $result->start_at,
+                'end_at' => $result->end_at,
                 'duration' => $result->Duration,
                 'status' => $result->status,
             ],
-            'resultQuestions' => $questions,
+            'questions' => $questions,
         ]);
     }
 
@@ -95,22 +94,25 @@ class ExamController extends Controller
 
     public function saveAnswer(Request $request, $resultID)
     {
-        $answers = $request->input('answers');
 
-        foreach ($answers as $item) {
-            ResultQuestion::where('resultID', $resultID)
-                ->where('questionID', $item['questionID'])
-                ->update(['ansUser' => $item['ansUser']]);
-        }
+        $questionId = $request->input('questionid');
+        $ansuser    = $request->input('ansuser');
 
-        return response()->json(['message' => 'Lưu đáp án thành công']);
+        $result = ResultQuestion::where('resultid', $resultID)->where('questionid', $questionId)->update(['ansuser' => strtoupper($ansuser)]);
+
+        return response()->json($result);
     }
+
 
     public function finishExam($resultID)
     {
         $result = Result::findOrFail($resultID);
 
-        $questions = ResultQuestion::where('resultID', $resultID)
+        if (!$result) {
+            return response()->json(["message", "không tồn tại bài ghi"], 404);
+        }
+
+        $questions = ResultQuestion::where('resultid', $resultID)
             ->with('question')
             ->get();
 
@@ -118,8 +120,8 @@ class ExamController extends Controller
         $MandatoryPass = true;
         $questionQuatity = 0;
         foreach ($questions as $q) {
-                   $questionQuatity++;
-            if ($q->ansUser && $q->ansUser === $q->question->ansRight) {
+            $questionQuatity++;
+            if ($q->ansuser && $q->ansuser === $q->question->ansright) {
                 $correct++;
             } else if ($q->question && $q->question->mandatory) {
                 $MandatoryPass = false;
@@ -128,68 +130,45 @@ class ExamController extends Controller
 
         $result->score = $correct;
         $result->status = 'complete';
-        $result->endAt = now();
-        $result->Duration = now()->diffInMinutes($result->startAt);
         $result->submitted_at = now();
-        $result->isPass = $correct >= 28 && $MandatoryPass;
-        $result->questionQuantity = $questionQuatity;
+        $result->ispass = $correct >= 28 && $MandatoryPass;
         $result->save();
 
+        return response()->json($result);
+    }
+
+    public function result($id)
+    {
+        $result = Result::find($id);
+
+        if (!$result) {
+            return response()->json(['message' => 'Result không tồn tại'], 404);
+        }
+        $resultQuestions = ResultQuestion::with('question')
+            ->where('resultID', $id)
+            ->orderBy('id')
+            ->get();
+
+
+        $questions = $resultQuestions->map(function ($rq) {
+            return [
+                'id' => $rq->question->id,
+                'title' => $rq->question->title,
+                'content' => $rq->question->content,
+                'audio' => $rq->question->audio,
+                'ansa' => $rq->question->ansa,
+                'ansb' => $rq->question->ansb,
+                'ansc' => $rq->question->ansc,
+                'ansd' => $rq->question->ansd,
+                'ansRight' => $rq->question->ansRight,
+                'ansUser' => $rq->ansUser,
+            ];
+        });
+
+        $result->questions = $questions;
+
         return response()->json([
-            $result
+            'result' => $result
         ]);
     }
-
-    public function Results()
-    {
-        $user = Auth::user();
-
-        if (!$user) {
-            return response()->json(["message" => "vui lòng đăng nhập", 401]);
-        }
-
-        $results = Result::where('userID', $user->id)->get();
-
-        return response()->json($results);
-    }
-
-public function result($id)
-{
-    // Lấy kết quả
-    $result = Result::find($id);
-
-    if (!$result) {
-        return response()->json(['message' => 'Result không tồn tại'], 404);
-    }
-
-    // Lấy các câu hỏi kèm quan hệ question
-    $resultQuestions = ResultQuestion::with('question')
-        ->where('resultID', $id)
-        ->orderBy('id')
-        ->get();
-
-    // Chuyển resultQuestions vào result.questions để frontend dùng trực tiếp
-    $questions = $resultQuestions->map(function ($rq) {
-        return [
-            'id' => $rq->question->id,
-            'title' => $rq->question->title,
-            'content' => $rq->question->content,
-            'audio' => $rq->question->audio,
-            'ansa' => $rq->question->ansa,
-            'ansb' => $rq->question->ansb,
-            'ansc' => $rq->question->ansc,
-            'ansd' => $rq->question->ansd,
-            'ansRight' => $rq->question->ansRight,
-            'ansUser' => $rq->ansUser, // đáp án người dùng chọn
-        ];
-    });
-
-    // Thêm vào object result
-    $result->questions = $questions;
-
-    return response()->json([
-        'result' => $result
-    ]);
-}
-
 }
