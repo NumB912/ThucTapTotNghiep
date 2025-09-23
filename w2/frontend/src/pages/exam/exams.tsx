@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { FaArrowLeft, FaPlus } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 import ExamCard from "../../component/examCard";
 import { useUserContext } from "../../context/userContext";
 import type { Result } from "../../model/result";
@@ -11,33 +11,7 @@ const Exams: React.FC = () => {
   const [results, setResults] = useState<Result[]>([]);
   const { token } = useUserContext();
   const [loading, setLoading] = useState<boolean>(true);
-  async function handleCreateNewExam() {
 
-    if (!token) {
-      navigate("/");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/exam/start", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        navigate(`/exams/exam/${data.resultid}`);
-      } else {
-        const text = await response.text();
-        console.error("Tạo bài thi thất bại:", response.status, text);
-      }
-    } catch (err) {
-      console.error("Lỗi khi tạo bài thi:", err);
-    }
-  }
   useEffect(() => {
     async function getResults() {
       if (!token) {
@@ -154,7 +128,7 @@ const Exams: React.FC = () => {
             return (
               <button
                 key={result.id}
-                className="p-3 border border-gray-300 hover:shadow-lg hover:scale-105 transition-all duration-150"
+                className="p-3 border border-gray-300 rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-150"
                 onClick={() => navigate(`/exams/exam/${result.id}`)}
               >
                 Tiếp tục bài thi
@@ -175,14 +149,6 @@ const Exams: React.FC = () => {
             );
           }
         })}
-
-                <button
-          className="p-5 border border-gray-300 cursor-pointer font-bold  hover:shadow-lg hover:scale-105 transition-all duration-150"
-          onClick={handleCreateNewExam}
-        >
-        <div className="flex items-center justify-center gap-3"><FaPlus/>
-          Tạo bài thi mới</div> 
-        </button>
       </div>
     </div>
   );

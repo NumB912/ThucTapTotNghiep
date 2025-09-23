@@ -7,9 +7,12 @@ import Exams from "../pages/exam/exams";
 import Root from "../pages/root";
 import PracticeTopic from "../pages/practice/practiceTopic";
 import ExamDetail from "../pages/exam/examDetail";
-import Result from "../pages/exam/result/resultDetail";
-import SignUp from "../pages/auth/SignUp"
-import SignIn from "../pages/auth/login"
+import SignUp from "../pages/auth/SignUp";
+import SignIn from "../pages/auth/login";
+import ExamIndex from "../pages/exam/examIndex";
+import HistoryDetail from "../pages/exam/history/historyDetail";
+import Histories from "../pages/exam/history/histories";
+import Statistics from "../pages/exam/statistics/statistics";
 const route = createBrowserRouter([
   {
     path: "/",
@@ -26,6 +29,21 @@ const route = createBrowserRouter([
         path: "/Exams",
         element: <Exams />,
       },
+      {
+        path: "/Exam/Index",
+        element: <ExamIndex />,
+      },
+      {
+        path: "/Histories",
+        element: <Histories />,
+      },
+      {
+        path: "/Histories/:id",
+        element: <HistoryDetail />,
+      },{
+        path:"/statistic",
+        element:<Statistics/>
+      }
     ],
     element: <Root />,
   },
@@ -36,20 +54,19 @@ const route = createBrowserRouter([
   {
     path: "/results/:id",
     element: <Results />,
-  },{
-    path: "/result/:id",
-    element: <Result />,
   },
   {
     path: "practice/:id",
     element: <PracticeTopic />,
-  },{
-    path:"SignIn",
-    element:<SignIn/>,
-   },{
-    path:"SignUp",
-    element:<SignUp/>
-   }
+  },
+  {
+    path: "SignIn",
+    element: <SignIn />,
+  },
+  {
+    path: "SignUp",
+    element: <SignUp />,
+  },
 ]);
 
 export default route;

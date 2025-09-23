@@ -5,7 +5,7 @@ import { useUserContext } from "../../../context/userContext";
 import Answer from "../../../component/ans";
 import type { Result } from "../../../model/result";
 
-const ResultDetail = () => {
+const HistoryDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [questionResult, setQuestionResult] = useState<Result>();
@@ -32,7 +32,6 @@ const ResultDetail = () => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
           setQuestionResult(data.result);
         }
       } catch (e) {
@@ -44,8 +43,8 @@ const ResultDetail = () => {
   }, [id, token]);
 
   return (
-    <div className="flex items-center justify-center bg-gray-100">
-      <div className="exam-content flex flex-col gap-2 bg-white w-9/10 h-9/10 border border-gray-100 rounded-sm p-5 shadow-sm">
+    <div className="flex items-center justify-center w-full">
+      <div className="exam-content flex flex-col gap-2 bg-white border border-gray-100 rounded-sm p-5 shadow-sm">
         <div className="info">
           <div className="py-2 flex justify-between items-center">
             <button
@@ -87,33 +86,29 @@ const ResultDetail = () => {
               <p className="font-bold text-blue-500">
                 Câu {idx + 1} {qr.mandatory ? "(Câu liệt)" : ""}. {qr.title}
               </p>
-
               {qr.content && (
-                <div className="content">{<img src={qr.content} />}</div>
+                <div className="content">
+                  <img src={qr.content} />
+                </div>
               )}
-
               <div className="questions mt-5">
                 <div className="flex flex-col gap-1.5">
                   {["A", "B", "C", "D"].map((opt) => {
-                    const ansText =
-                      qr[`ans${opt.toLowerCase()}` as keyof typeof qr];
+                    const ansText = qr[`ans${opt.toLowerCase()}` as keyof typeof qr];
                     if (!ansText) return null;
 
-                    const isUser = qr.ansuser === opt; // đáp án người dùng chọn
-                    const isRight = qr.ansright === opt; // đáp án đúng
+                    const isUser = qr.ansuser === opt;
+                    const isRight = qr.ansright === opt; 
                     let active = false;
                     let colorClass = "";
 
                     if (isUser && isRight) {
-                      // chọn đúng
                       active = true;
                       colorClass = "bg-green-400";
                     } else if (isUser && !isRight) {
-                      // chọn sai
                       active = true;
                       colorClass = "bg-red-400";
                     } else if (!isUser && isRight) {
-                      // đáp án đúng mà không chọn
                       colorClass = "bg-green-100";
                     }
 
@@ -128,12 +123,26 @@ const ResultDetail = () => {
                   })}
                 </div>
               </div>
+              <div className="mt-2 text-[12px]">
+                <p className="text-green-500 font-semibold">
+                  Câu đúng: {qr.ansright}
+                </p>
+                {qr.anshint && (
+                  <p className="text-gray-500 italic">
+                    Giải thích: {qr.anshint}
+                  </p>
+                )}
+                {qr.ansuser?
+                "":<p className="text-red-500">Người dùng chưa chọn</p>
+                }
+              </div>
             </div>
-          ))}
+))}
+
         </div>
       </div>
     </div>
   );
 };
 
-export default ResultDetail;
+export default HistoryDetail;

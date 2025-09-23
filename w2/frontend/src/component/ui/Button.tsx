@@ -8,7 +8,7 @@ interface ButtonProp{
 
 const Button = ({onClick,children,className}:ButtonProp) => {
   return (
-    <button onClick={onClick} className={`w-fit bg-blue-500 text-white rounded p-1 text-sm cursor-pointer hover:bg-blue-400 ${className}`}>
+    <button onClick={onClick} className={`w-fit bg-blue-500 text-white rounded p-1 text-sm cursor-pointer  ${className}`}>
         {children}
     </button>
   )

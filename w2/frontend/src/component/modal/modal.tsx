@@ -1,11 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
-const Modal = ({ isOpen, setIsOpen, children,className="bg-white" }) => {
+interface ModalProp{
+  isOpen:boolean;
+  setIsOpen:()=>void;
+  children:ReactNode;
+  className:string;
+}
+
+const Modal = ({ isOpen, setIsOpen, children,className="bg-white" }:ModalProp) => {
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape") {
-        setIsOpen(false);
+        setIsOpen();
       }
     };
     document.addEventListener("keydown", handleEscape);
@@ -20,11 +27,11 @@ const Modal = ({ isOpen, setIsOpen, children,className="bg-white" }) => {
     <div
       className={`fixed inset-0 bg-black/30 bg-opacity-50 flex items-center justify-center `}
       onClick={() => {
-        setIsOpen(false);
+        setIsOpen();
       }}
     >
       <div
-        className={` p-7 rounded-lg  ${className}`}
+        className={` p-7 rounded-lg bg-white  ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

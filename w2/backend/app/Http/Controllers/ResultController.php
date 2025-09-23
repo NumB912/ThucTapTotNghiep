@@ -29,25 +29,61 @@ class ResultController extends Controller
         return response()->json($results);
     }
 
-  public function result($id)
+public function result($id)
 {
     $user = Auth::user();
 
     if (!$user) {
-        return response()->json(["message" => "vui lòng đăng nhập"], 401);
+        return response()->json(["message" => "Vui lòng đăng nhập"], 401);
     }
 
+    // Lấy kết quả kèm câu hỏi và pivot (ansuser)
     $result = Result::where('id', $id)
-                    ->where('userid', $user->id)
-                    ->with(['questions']) // nếu muốn load quan hệ
-                    ->first();
+        ->where('userid', $user->id)
+        ->with(['resultQuestions.question.topic'])
+        ->first();
 
     if (!$result) {
         return response()->json(["message" => "Không có kết quả"], 404);
     }
 
+    // Map lại để trả về chuẩn interface Result
+    $questions = $result->resultQuestions->map(function ($rq) {
+        $q = $rq->question;
+        return [
+            'id' => $q->id,
+            'title' => $q->title,
+            'content' => $q->content,
+            'audio' => $q->audio,
+            'ansa' => $q->ansa,
+            'ansb' => $q->ansb,
+            'ansc' => $q->ansc,
+            'ansd' => $q->ansd,
+            'mandatory' => $q->mandatory,
+            'pos' => $q->pos,
+            'status' => $q->status,
+            'topic' => $q->topic,
+            'anshint' => $q->anshint,
+            'ansright' => $q->ansright,
+            'ansuser' => $rq->ansuser,
+        ];
+    });
+
     return response()->json([
-        'result' => $result
+        'result' => [
+            'id' => (string) $result->id,
+            'user' => $user,
+            'score' => $result->score,
+            'submitted_at' => $result->submitted_at,
+            'start_at' => $result->start_at,
+            'end_at' => $result->end_at,
+            'duration' => $result->duration,
+            'ispass' => $result->ispass,
+            'question_quantity' => $result->question_quantity,
+            'status' => $result->status,
+            'questions' => $questions,
+        ]
     ]);
 }
+
 }

@@ -20,7 +20,7 @@ const ExamCard: React.FC<ExamCardProps> = ({ date, score, correct, wrong, result
   return (
     <div
       onClick={onClick}
-      className="p-2 border relative border-gray-300 cursor-pointer rounded hover:shadow-lg hover:scale-105 transition-all duration-150"
+      className="p-2 border relative rounded-lg border-gray-300 cursor-pointer rounded hover:shadow-lg hover:scale-105 transition-all duration-150"
     >
       <div className="flex flex-col h-full gap-2 items-center justify-start">
       <div className="date w-full font-bold">

@@ -88,7 +88,7 @@ const Result = () => {
 
           <Button
             onClick={() => {
-              navigate("/exams");
+              navigate("/histories");
             }}
             className="w-full font-bold text-[10px] "
           >

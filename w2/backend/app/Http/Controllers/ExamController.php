@@ -24,14 +24,13 @@ class ExamController extends Controller
         $result = Result::create([
             'userid' => $user->id,
             'score' => 0,
-            'start_at' => date('Y-m-d H:i:s'),
-            'end_at' => date('Y-m-d H:i:s', strtotime('+30 minutes')),
+            'start_at' => date('Y-m-d H:i:sP'), // P sẽ trả +07:00
+            'end_at' => date('Y-m-d H:i:sP', strtotime('+30 minutes')),
             'duration' => 30,
             'status' => 'progressing',
             'ispass' => false,
             'question_quantity' => 30,
         ]);
-
         foreach ($questions as $q) {
             ResultQuestion::create([
                 'questionid' => $q->id,

@@ -18,7 +18,7 @@ const Home = () => {
 
         <Card>
           <Link
-            to={"/Exams"}
+            to={"/Exam/Index"}
            
           >
             <p className="font-bold">Kiểm tra</p>

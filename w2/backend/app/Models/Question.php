@@ -33,7 +33,7 @@ class Question extends Model
             'results_questions',
             'questionid',
             'resultid'
-        )->withPivot('ansUser');
+        )->withPivot('ansuser');
     }
 }
 
