@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { FaArrowLeft, FaChartBar, FaClipboard, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import { useUserContext } from "../../context/userContext";
+import { useAuth } from "../../context/userContext";
 import type { Result } from "../../model/result";
 
 const ExamIndex = () => {
   const navigate = useNavigate();
-  const { token } = useUserContext();
+  const { token } = useAuth();
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   async function handleCreateNewExam() {

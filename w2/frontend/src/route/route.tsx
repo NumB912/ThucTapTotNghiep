@@ -1,6 +1,5 @@
 import React from "react";
 import { createBrowserRouter } from "react-router";
-import Results from "../pages/exam/result/result";
 import Home from "../pages/home";
 import Practice from "../pages/practice/practice";
 import Exams from "../pages/exam/exams";
@@ -13,6 +12,10 @@ import ExamIndex from "../pages/exam/examIndex";
 import HistoryDetail from "../pages/exam/history/historyDetail";
 import Histories from "../pages/exam/history/histories";
 import Statistics from "../pages/exam/statistics/statistics";
+import Info from "../pages/auth/info";
+import EditProfile from "../pages/auth/edit";
+import Result from "../pages/exam/result/result";
+import ChangePassword from "../pages/auth/editPassword";
 const route = createBrowserRouter([
   {
     path: "/",
@@ -43,6 +46,15 @@ const route = createBrowserRouter([
       },{
         path:"/statistic",
         element:<Statistics/>
+      },{
+        path:"/Info",
+        element:<Info/>
+      },{
+        path:"/editProfile",
+        element:<EditProfile/>
+      },{
+        path:"/changePassword",
+        element:<ChangePassword/>
       }
     ],
     element: <Root />,
@@ -53,7 +65,7 @@ const route = createBrowserRouter([
   },
   {
     path: "/results/:id",
-    element: <Results />,
+    element: <Result />,
   },
   {
     path: "practice/:id",

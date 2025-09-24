@@ -4,15 +4,14 @@ import { useNavigate, useParams } from "react-router";
 import Item from "../../component/item";
 import Button from "../../component/ui/Button";
 import Answer from "../../component/ans";
-import { useUserContext } from "../../context/userContext";
+import { useAuth } from "../../context/userContext";
 import type { Result } from "../../model/result";
 import type { Question } from "../../model/question";
-import { diffTimeMinutesSeconds } from "../../utils/time";
 import Modal from "../../component/modal/modal";
 
 const ExamDetail: React.FC = () => {
   const navigate = useNavigate();
-  const { token } = useUserContext();
+  const { token } = useAuth();
   const { id } = useParams();
   const [result, setResult] = useState<Result>();
   const [question, setQuestion] = useState<Question>();

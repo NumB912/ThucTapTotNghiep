@@ -1,44 +1,25 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { useUserContext } from "../../context/userContext";
+import { useAuth } from "../../context/userContext";
 
 
 const SignIn = () => {
   const navigate = useNavigate();
   const [userName, setuserName] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const {setToken} = useUserContext();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    try {
-      const res = await fetch("http://127.0.0.1:8000/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({"username": userName,"password": password }),
-      });
-
-
-
-      if (!res.ok) {
-        const errData = await res.json();
-        setError(errData.message || "Đăng nhập thất bại");
-        return;
-      }
-
-      const data = await res.json();
-      setToken(data.token)
-      navigate("/");
-    } catch (err) {
-      console.error(err);
-      setError("Có lỗi xảy ra");
-    }
+  const {login,error,setError} = useAuth();
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // ngăn reload trang
+    const ok = await login(userName, password);
+    if (!ok) setError("Sai tên đăng nhập hoặc mật khẩu");
+    else {
+      setError("")
+      navigate("/")
+    };
   };
+
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">

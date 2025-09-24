@@ -40,7 +40,6 @@ class QuestionController extends Controller
         ], 201);
     }
 
-    // Hiển thị chi tiết câu hỏi
     public function show($id)
     {
         $question = Question::with('topic')->find($id);

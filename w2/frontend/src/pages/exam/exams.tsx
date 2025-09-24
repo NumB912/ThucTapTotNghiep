@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
 import ExamCard from "../../component/examCard";
-import { useUserContext } from "../../context/userContext";
+import { useAuth } from "../../context/userContext";
 import type { Result } from "../../model/result";
 
 
 const Exams: React.FC = () => {
   const navigate = useNavigate();
   const [results, setResults] = useState<Result[]>([]);
-  const { token } = useUserContext();
+  const { token } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

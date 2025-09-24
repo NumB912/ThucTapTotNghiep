@@ -19,7 +19,6 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    // Tạo user mới
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -37,22 +36,23 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $validated = $request->validate([
-            'name' => 'string|nullable',
-            'email' => 'email|unique:users,email,' . $id,
-            'password' => 'min:6|nullable'
-        ]);
-
-        if (isset($validated['password'])) {
-            $validated['password'] = bcrypt($validated['password']);
+        if ($request->has('name')) {
+            $user->name = $request->input('name');
+        }
+        if ($request->has('email')) {
+            $user->email = $request->input('email');
         }
 
-        $user->update($validated);
+        if ($request->hasFile('img')) {
+            $path = $request->file('img')->store('public/users');
+            $url = \Illuminate\Support\Facades\Storage::url($path);
+            $user->img = $url;
+        }
 
-        return response()->json($user);
+        $user->save();
+
+        return response()->json(['user' => $user]);
     }
-
-    // Xóa user
     public function destroy($id)
     {
         $user = User::findOrFail($id);

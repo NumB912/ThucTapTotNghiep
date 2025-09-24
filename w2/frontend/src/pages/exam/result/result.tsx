@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Button from "../../../component/ui/Button";
 import { useNavigate, useParams } from "react-router";
-import { useUserContext } from "../../../context/userContext";
+import { useAuth } from "../../../context/userContext";
 import type { Result } from "../../../model/result";
 
 const Result = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [Result, setResult] = useState<Result>();
-  const { token } = useUserContext();
+  const { token } = useAuth();
 
   useEffect(() => {
     async function getResult() {

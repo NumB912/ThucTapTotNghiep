@@ -14,7 +14,7 @@ const CardTopicPractice = ({ question, number, onSelectPractice}: CardTopicPract
   function handleChoose(chs: string) {
     if (choose !== "") return;
     setChoose(chs);
-    const correct = chs === question.ansRight;
+    const correct = chs === question.ansright;
     setIsCorrect(correct);
     onSelectPractice(question.id,chs)
   }
@@ -24,7 +24,7 @@ const CardTopicPractice = ({ question, number, onSelectPractice}: CardTopicPract
       <p className="font-bold text-blue-500">
         Câu {number} {question.mandatory ? "(Câu liệt)" : ""}. {question.title}
       </p>
-        {question?.content && <div className="content mt-5">{<img src={question?.content}></img>}</div>}
+        {question?.content && <div className="content mt-5">{<img src={"http://127.0.0.1:8000/api"+question?.content} loading="lazy"></img>}</div>}
 
 
       <div className="questions mt-5">
@@ -67,14 +67,14 @@ const CardTopicPractice = ({ question, number, onSelectPractice}: CardTopicPract
           >
             {isCorrect ? "Bạn đã chọn đúng" : "Bạn đã chọn sai"}
           </p>
-          {question.ansHint && (
+          {question.anshint && (
             <p className="text-blue-500 border border-blue-400 p-2 text-[10px]">
-              Gợi ý: {question.ansRight}
+              Gợi ý: {question.ansright}
             </p>
           )}
           {!isCorrect && (
             <p className="text-gray-500 text-[10px]">
-              Đáp án đúng: {question.ansRight}
+              Đáp án đúng: {question.ansright}
             </p>
           )}
         </div>

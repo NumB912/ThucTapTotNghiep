@@ -18,7 +18,7 @@ const Practice = () => {
           console.log("loi");
         }
       } catch (e) {
-        console.error("lỗi trong quá trình thực hiện");
+        console.error("lỗi trong quá trình thực hiện",e);
       } finally {
         setLoading(false);
       }

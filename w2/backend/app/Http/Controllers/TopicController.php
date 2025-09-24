@@ -21,7 +21,7 @@ class TopicController extends Controller
         if (!$topic) {
             return response()->json(['message' => 'Topic không tồn tại'], 404);
         }
-        $questions = Question::with("topic")->where('topic_id', $id)->inRandomOrder()->take(30)->get();
+        $questions = Question::with("topic")->where('topic_id', $id)->get();
 
         return response()->json($questions);
     }

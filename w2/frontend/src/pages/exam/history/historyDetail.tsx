@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
-import { useUserContext } from "../../../context/userContext";
+import { useAuth } from "../../../context/userContext";
 import Answer from "../../../component/ans";
 import type { Result } from "../../../model/result";
 
@@ -9,7 +9,8 @@ const HistoryDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [questionResult, setQuestionResult] = useState<Result>();
-  const { token } = useUserContext();
+  const [loading,setLoading] = useState<boolean>(true)
+  const { token } = useAuth();
   useEffect(() => {
     async function getResult() {
       if (!token) {
@@ -32,6 +33,7 @@ const HistoryDetail = () => {
 
         if (response.ok) {
           const data = await response.json();
+          setLoading(false)
           setQuestionResult(data.result);
         }
       } catch (e) {
@@ -43,6 +45,7 @@ const HistoryDetail = () => {
   }, [id, token]);
 
   return (
+    !loading?
     <div className="flex items-center justify-center w-full">
       <div className="exam-content flex flex-col gap-2 bg-white border border-gray-100 rounded-sm p-5 shadow-sm">
         <div className="info">
@@ -88,7 +91,7 @@ const HistoryDetail = () => {
               </p>
               {qr.content && (
                 <div className="content">
-                  <img src={qr.content} />
+                  <img src={"http://127.0.0.1:8000/api"+qr.content} />
                 </div>
               )}
               <div className="questions mt-5">
@@ -141,6 +144,68 @@ const HistoryDetail = () => {
 
         </div>
       </div>
+    </div>:    <div className="flex items-center justify-center w-full h-10">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 100 50"
+        width="50"
+        height="25"
+      >
+        <circle
+          fill="#3B82F6"
+          stroke="#3B82F6"
+          strokeWidth="5"
+          r="5"
+          cx="20"
+          cy="16"
+        >
+          <animate
+            attributeName="cy"
+            calcMode="spline"
+            dur="1s"
+            values="16;34;16;"
+            keySplines=".5 0 .5 1;.5 0 .5 1"
+            repeatCount="indefinite"
+            begin="-.5s"
+          />
+        </circle>
+        <circle
+          fill="#3B82F6"
+          stroke="#3B82F6"
+          strokeWidth="5"
+          r="5"
+          cx="50"
+          cy="16"
+        >
+          <animate
+            attributeName="cy"
+            calcMode="spline"
+            dur="1s"
+            values="16;34;16;"
+            keySplines=".5 0 .5 1;.5 0 .5 1"
+            repeatCount="indefinite"
+            begin="-.2s"
+          />
+        </circle>
+        <circle
+          fill="#3B82F6"
+          stroke="#3B82F6"
+          strokeWidth="5"
+          r="5"
+          cx="80"
+          cy="16"
+        >
+          <animate
+            attributeName="cy"
+            calcMode="spline"
+            dur="1s"
+            values="16;34;16;"
+            keySplines=".5 0 .5 1;.5 0 .5 1"
+            repeatCount="indefinite"
+            begin="0s"
+          />
+        </circle>
+      </svg>
     </div>
   );
 };
