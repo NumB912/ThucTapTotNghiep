@@ -65,9 +65,9 @@ const EditProfile: React.FC = () => {
 
       <div className="flex flex-col items-center mb-4">
         <img
-          src={previewUrl || "https://via.placeholder.com/150"}
+          src={previewUrl || "https://i.fbcd.co/products/resized/resized-750-500/563d0201e4359c2e890569e254ea14790eb370b71d08b6de5052511cc0352313.jpg"}
           alt="Avatar"
-          className="h-24 w-24 rounded-full object-cover mb-2 cursor-pointer"
+          className="h-24 w-24 border border-gray-300 rounded-full object-cover mb-2 cursor-pointer"
           onClick={() => fileInputRef.current?.click()}
         />
         <input

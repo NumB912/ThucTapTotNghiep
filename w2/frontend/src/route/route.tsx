@@ -11,11 +11,11 @@ import SignIn from "../pages/auth/login";
 import ExamIndex from "../pages/exam/examIndex";
 import HistoryDetail from "../pages/exam/history/historyDetail";
 import Histories from "../pages/exam/history/histories";
-import Statistics from "../pages/exam/statistics/statistics";
 import Info from "../pages/auth/info";
 import EditProfile from "../pages/auth/edit";
 import Result from "../pages/exam/result/result";
 import ChangePassword from "../pages/auth/editPassword";
+import Ranks from "../pages/rank/rank";
 const route = createBrowserRouter([
   {
     path: "/",
@@ -44,8 +44,8 @@ const route = createBrowserRouter([
         path: "/Histories/:id",
         element: <HistoryDetail />,
       },{
-        path:"/statistic",
-        element:<Statistics/>
+        path:"/ranks",
+        element:<Ranks/>
       },{
         path:"/Info",
         element:<Info/>

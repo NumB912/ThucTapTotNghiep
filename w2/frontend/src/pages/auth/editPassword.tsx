@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import PasswordModal from "./modalPassword";
 import { useAuth } from "../../context/userContext";
 import PasswordModalAdvance from "./modalPassword";
+import { FaArrowLeft } from "react-icons/fa";
 
 const ChangePassword = () => {
   const { changePassword, token } = useAuth();
@@ -60,6 +61,12 @@ const ChangePassword = () => {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-full hover:bg-gray-200 w-fit"
+            >
+              <FaArrowLeft />
+            </button>
       <h2 className="text-xl font-bold mb-4">Đổi mật khẩu</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>

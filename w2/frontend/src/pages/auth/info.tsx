@@ -22,7 +22,7 @@ const Info = () => {
       <div className="flex flex-col justify-center items-center p-6 ">
         <div className="w-6/10 flex flex-col items-center gap-5 shadow-md rounded border border-gray-200 p-5">
           <img
-            className="h-30 w-30 rounded-full object-cover mr-6"
+            className="h-30 w-30 rounded-full object-cover mr-6 border border-gray-300"
             src={
               user.img ||
               "https://preview.redd.it/bocchi-the-rock-season-2-announcement-visual-v0-8g42euxvhaje1.jpeg?width=640&crop=smart&auto=webp&s=2a16ae419d38d22a3c5d56b4bd3393b926f482bd"
@@ -54,7 +54,7 @@ const Info = () => {
           </div>
 
           <div className="w-full flex justify-end gap-3">
-            <button onClick={()=>navigate("/editProfile")} className="bg-blue-500 p-2 text-white rounded hover:bg-blue-500/80 cursor-pointer">
+            <button onClick={()=>navigate("/changePassword")} className="bg-blue-500 p-2 text-white rounded hover:bg-blue-500/80 cursor-pointer">
               Đổi mật khẩu
             </button>
             <button onClick={()=>navigate("/editProfile")}  className="bg-blue-500 p-2 text-white rounded hover:bg-blue-500/80 cursor-pointer">

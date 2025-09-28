@@ -38,7 +38,10 @@ Route::get('/users', [UserController::class, 'index']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/public/images/{filename}', [ImageController::class, 'show']);
-    Route::get('/users/{filename}',[UserController::class,'avatar']);
+Route::get('/users/{filename}',[UserController::class,'avatar']);
+
+Route::get('/rank',[ResultController::class,'rank']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 

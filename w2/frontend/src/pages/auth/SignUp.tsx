@@ -8,7 +8,7 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [userName,setUserName] = useState('');
+  const [username,setUserName] = useState('');
   const {setToken} = useAuth()
 
   const handleSubmit = async (e) => {
@@ -22,7 +22,7 @@ const SignUp = () => {
           'Content-Type': 'application/json',
           Accept: 'application/json'
         },
-        body: JSON.stringify({ userName,name, email, password })
+        body: JSON.stringify({ username,name, email, password })
       });
 
       if (!res.ok) {
@@ -55,7 +55,7 @@ const SignUp = () => {
               type="text"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
               placeholder="userName"
-              value={userName}
+              value={username}
               onChange={(e) => setUserName(e.target.value)}
             />
           </div>

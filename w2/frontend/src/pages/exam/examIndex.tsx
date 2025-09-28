@@ -79,11 +79,11 @@ const ExamIndex = () => {
       </button>
 
       <div className="h-full grid grid-cols-5 gap-3">
-        <button onClick={()=>navigate("/statistic")} className="bg-yellow-500 rounded-lg flex flex-col items-center gap-5 p-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer">
+        <button onClick={()=>navigate("/ranks")} className="bg-yellow-500 rounded-lg flex flex-col items-center gap-5 p-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer">
           <div className="rounded-full p-3 bg-white w-fit">
             <FaChartBar />
           </div>
-          <p className="text-xl font-bold text-white text-center">Thống kê</p>
+          <p className="text-xl font-bold text-white text-center">Xếp hạng</p>
         </button>
         <button onClick={()=>navigate("/histories")} className="bg-blue-500 rounded-lg flex flex-col items-center p-5 gap-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer">
           <div className="rounded-full p-3 bg-white w-fit">

@@ -33,7 +33,7 @@ const Practice = () => {
         <div className="exam-content flex flex-col gap-3 bg-white w-full rounded-sm p-3 h-full">
           <button
             onClick={() => {
-              navigate(-1);
+              navigate("/");
             }}
             className="p-2 rounded-full hover:bg-gray-200 w-fit"
           >

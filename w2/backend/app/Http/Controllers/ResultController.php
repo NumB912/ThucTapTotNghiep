@@ -6,6 +6,7 @@ use App\Models\Result;
 use App\Models\ResultQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ResultController extends Controller
 {
@@ -46,7 +47,6 @@ class ResultController extends Controller
             return response()->json(["message" => "Không có kết quả"], 404);
         }
 
-        // Map lại để trả về chuẩn interface Result
         $questions = $result->resultQuestions->map(function ($rq) {
             $q = $rq->question;
             return [
@@ -84,4 +84,24 @@ class ResultController extends Controller
             ]
         ]);
     }
+
+public function rank()
+{
+    $result = Result::with('user')
+        ->select(
+            'userid',
+            DB::raw('COUNT(*) as total_result'),
+            DB::raw('SUM(ispass::int) as total_pass')
+        )
+        ->groupBy('userid')
+        ->orderByDesc('total_result')
+        ->paginate(3);
+    $offset = ($result->currentPage() - 1) * $result->perPage();
+    $result->getCollection()->transform(function ($item, $index) use ($offset) {
+        $item->rank = $offset + $index + 1;
+        return $item;
+    });
+
+    return response()->json($result);
+}
 }
