@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaArrowLeft, FaClipboard } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import ExamCard from "../../../component/examCard";
-import { useAuth } from "../../../context/userContext";
+import { useAuth } from "../../../hook/userContext";
 import type { Result } from "../../../model/result";
 
 const Histories = () => {

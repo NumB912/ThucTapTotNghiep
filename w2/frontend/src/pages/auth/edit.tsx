@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { useAuth } from "../../context/userContext";
+import { useAuth } from "../../hook/userContext";
 import { useNavigate } from "react-router";
 
 const EditProfile: React.FC = () => {

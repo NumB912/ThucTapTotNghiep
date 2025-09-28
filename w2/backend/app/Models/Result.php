@@ -27,7 +27,8 @@ class Result extends Model
     }
 
     public function resultQuestions() {
-        return $this->hasMany(ResultQuestion::class, 'resultid');
+       return $this->hasMany(ResultQuestion::class, 'resultid', 'id')
+                ->orderBy('id', 'asc');
     }
 
     public function questions() {

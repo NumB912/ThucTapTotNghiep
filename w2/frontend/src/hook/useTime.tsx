@@ -26,7 +26,7 @@ function useCountdown(targetDateStr: string) {
       );
     }, 1000);
 
-    return () => clearInterval(intervalId); // dọn dẹp khi unmount
+    return () => clearInterval(intervalId);
   }, [targetDateStr]);
 
   return timeLeft;

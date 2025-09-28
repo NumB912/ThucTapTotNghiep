@@ -38,14 +38,14 @@ Route::get('/users', [UserController::class, 'index']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/public/images/{filename}', [ImageController::class, 'show']);
-    Route::get('/users/{filename}',[UserController::class,'avatar']);
+Route::get('/users/{filename}', [UserController::class, 'avatar']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::put('/user', [UserController::class, 'update']); 
+    Route::put('/user', [UserController::class, 'update']);
     Route::post('/user/changepassword', [UserController::class, 'changepassword']);
 
-    Route::post('/user/avatar', [UserController::class, 'uploadAvatar']); 
+    Route::post('/user/avatar', [UserController::class, 'uploadAvatar']);
 
     Route::post('/exam/start', [ExamController::class, 'startExam']);
     Route::get('/exam/{resultID}', [ExamController::class, 'getExam']);

@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import type { User } from "../model/user";
-import { AuthContext } from "./userContext";
+import { AuthContext } from "../hook/userContext";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -41,6 +41,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ username, password }),
       });
+      console.log(res)
       if (!res.ok) return false;
       const data = await res.json();
       setToken(data.token);

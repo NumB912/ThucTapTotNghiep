@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaArrowLeft, FaChartBar, FaClipboard, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../context/userContext";
+import { useAuth } from "../../hook/userContext";
 import type { Result } from "../../model/result";
 
 const ExamIndex = () => {

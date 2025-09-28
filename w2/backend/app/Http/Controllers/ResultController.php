@@ -46,7 +46,6 @@ class ResultController extends Controller
             return response()->json(["message" => "Không có kết quả"], 404);
         }
 
-        // Map lại để trả về chuẩn interface Result
         $questions = $result->resultQuestions->map(function ($rq) {
             $q = $rq->question;
             return [

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
-import { useAuth } from "../context/userContext";
+import { useAuth } from "../hook/userContext";
 
 const Root = () => {
   const navigate = useNavigate();

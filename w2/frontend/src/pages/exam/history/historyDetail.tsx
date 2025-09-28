@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
-import { useAuth } from "../../../context/userContext";
+import { useAuth } from "../../../hook/userContext";
 import Answer from "../../../component/ans";
 import type { Result } from "../../../model/result";
 
@@ -33,6 +33,7 @@ const HistoryDetail = () => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log(data)
           setLoading(false)
           setQuestionResult(data.result);
         }

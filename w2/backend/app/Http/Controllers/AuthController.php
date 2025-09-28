@@ -15,7 +15,7 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = User::where('username', $request->username) ->first();
+        $user = User::where('username', $request->username)->first();
 
         if (!$user) {
             return response()->json(['message' => 'Sai tên đăng nhập'], 401);
@@ -24,6 +24,8 @@ class AuthController extends Controller
         if (!Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Sai mật khẩu'], 401);
         }
+
+        
 
         $token = $user->createToken('api-token')->plainTextToken;
 
@@ -37,32 +39,30 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'username' => 'required|string|unique:User,username',
+            'username' => 'required|string|unique:users,username',
             'password' => 'required|string|min:6',
             'name'     => 'required|string',
-            'email'    => 'required|email|unique:User,email',
+            'email'    => 'required|email|unique:users,email',
         ]);
 
-        try {
+        // try {
             $user = User::create([
                 'username' => $validated['username'],
                 'password' => Hash::make($validated['password']),
                 'name'     => $validated['name'],
                 'email'    => $validated['email'],
-                'createAt' => now(),
-                'updateAt' => now(),
             ]);
 
             return response()->json([
                 'message' => 'Đăng ký thành công',
                 'user'    => $user,
             ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Đăng ký thất bại',
-                'error'   => $e->getMessage(),
-            ], 500);
-        }
+        // // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'message' => 'Đăng ký thất bại',
+        //         'error'   => $e->getMessage(),
+        //     ], 500);
+        // }
     }
 
     public function logout(Request $request)

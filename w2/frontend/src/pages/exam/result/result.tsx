@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "../../../component/ui/Button";
 import { useNavigate, useParams } from "react-router";
-import { useAuth } from "../../../context/userContext";
+import { useAuth } from "../../../hook/userContext";
 import type { Result } from "../../../model/result";
 
 const Result = () => {

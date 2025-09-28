@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import PasswordModal from "./modalPassword";
-import { useAuth } from "../../context/userContext";
+import { useAuth } from "../../hook/userContext";
 import PasswordModalAdvance from "./modalPassword";
 
 const ChangePassword = () => {

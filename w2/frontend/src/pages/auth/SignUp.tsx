@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useAuth } from '../../context/userContext';
+import { useAuth } from '../../hook/userContext';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -8,13 +8,12 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [userName,setUserName] = useState('');
-  const {setToken} = useAuth()
+  const [username,setUserName] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+    console.log(username)
     try {
       const res = await fetch('http://127.0.0.1:8000/api/register', {
         method: 'POST',
@@ -22,7 +21,7 @@ const SignUp = () => {
           'Content-Type': 'application/json',
           Accept: 'application/json'
         },
-        body: JSON.stringify({ userName,name, email, password })
+        body: JSON.stringify({ username,name, email, password })
       });
 
       if (!res.ok) {
@@ -30,9 +29,7 @@ const SignUp = () => {
         setError(errData.message || 'Đăng ký thất bại');
         return;
       }
-
-      const data = await res.json();
-      setToken(data.token)
+      console.log(password)
       navigate('/');
     } catch (err) {
       console.error(err);
@@ -55,7 +52,7 @@ const SignUp = () => {
               type="text"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
               placeholder="userName"
-              value={userName}
+              value={username}
               onChange={(e) => setUserName(e.target.value)}
             />
           </div>
