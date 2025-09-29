@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useAuth } from "../../hook/userContext";
 import { useNavigate } from "react-router";
+import { FaArrowLeft } from "react-icons/fa";
 
 const EditProfile: React.FC = () => {
   const { user, updateUser, token } = useAuth();
@@ -9,13 +10,13 @@ const EditProfile: React.FC = () => {
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [avatar, setAvatar] = useState<File | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState(user?.img || ""); 
+  const [avatarUrl, setAvatarUrl] = useState(user?.img || "");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewUrl = avatar ? URL.createObjectURL(avatar) : avatarUrl || "";
 
   const handleAvatarUpload = async (): Promise<string | null> => {
-    if (!avatar) return avatarUrl; 
+    if (!avatar) return avatarUrl;
 
     const formData = new FormData();
     formData.append("img", avatar);
@@ -29,7 +30,7 @@ const EditProfile: React.FC = () => {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Upload avatar thất bại");
-      console.log(data.img)
+      console.log(data.img);
       return data.img;
     } catch (err) {
       console.error(err);
@@ -60,14 +61,25 @@ const EditProfile: React.FC = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto bg-white rounded shadow p-6">
-      <h2 className="text-xl font-bold mb-4">Chỉnh sửa hồ sơ</h2>
+    <div className="min-w-2xl flex flex-col items-center gap-5 shadow-md rounded border border-gray-200 p-5 mx-auto mt-10">
+      <div className="w-full flex gap-2 mb-5">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full hover:bg-gray-200 w-fit"
+        >
+          <FaArrowLeft />
+        </button>
+        <h2 className="text-xl font-bold">Chỉnh sửa thông tin</h2>
+      </div>
 
       <div className="flex flex-col items-center mb-4">
         <img
-          src={previewUrl || "https://via.placeholder.com/150"}
+          src={
+            previewUrl ||
+            "https://i.fbcd.co/products/resized/resized-750-500/563d0201e4359c2e890569e254ea14790eb370b71d08b6de5052511cc0352313.jpg"
+          }
           alt="Avatar"
-          className="h-24 w-24 rounded-full object-cover mb-2 cursor-pointer"
+          className="h-30 w-30 border border-gray-300 rounded-full object-cover mb-2 cursor-pointer"
           onClick={() => fileInputRef.current?.click()}
         />
         <input
@@ -79,24 +91,30 @@ const EditProfile: React.FC = () => {
         />
         <div className="text-sm text-gray-500">Click vào ảnh để thay đổi</div>
       </div>
+      <div className="w-full flex gap-5">
+        <div className="w-full">
+          {" "}
+          <label className="block text-sm mb-1">Tên</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="border p-2 w-full border-gray-300 rounded"
+          />
+        </div>
 
-      <label className="block text-sm mb-1">Tên</label>
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="border p-2 w-full mb-4 rounded"
-      />
-
-      <label className="block text-sm mb-1">Email</label>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="border p-2 w-full mb-4 rounded"
-      />
-
-      <div className="flex justify-end gap-3">
+        <div className="w-full">
+          {" "}
+          <label className="block text-sm mb-1">Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="border p-2 w-full border-gray-300 rounded"
+          />
+        </div>
+      </div>
+      <div className="flex justify-end gap-3 w-full">
         <button
           onClick={() => navigate("/info")}
           className="bg-gray-300 p-2 rounded hover:bg-gray-400"
@@ -113,6 +131,5 @@ const EditProfile: React.FC = () => {
     </div>
   );
 };
-
 
 export default EditProfile;

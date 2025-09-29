@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import ExamCard from "../../../component/examCard";
 import { useAuth } from "../../../hook/userContext";
 import type { Result } from "../../../model/result";
+import ButtonBack from "../../../component/buttonBack";
 
 const Histories = () => {
   const navigate = useNavigate();
@@ -11,6 +12,8 @@ const Histories = () => {
   const { token } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [percentage,setPercentage] = useState<number>(0)
+  const [examPass,setExamPass] = useState<number>(0)
+
   const [quantity_exam,Setquantity_exam] = useState<number>(0)
   useEffect(() => {
     async function getResults() {
@@ -50,6 +53,7 @@ useEffect(() => {
     const passCount = results.filter((res) => res.ispass).length;
     setPercentage((passCount / results.length) * 100);
     Setquantity_exam(results.length);
+    setExamPass(passCount)
   } else {
     setPercentage(0);
     Setquantity_exam(0);
@@ -59,18 +63,15 @@ useEffect(() => {
 
   return (
     !loading?<div className="exam-content flex flex-col gap-3 bg-white w-full rounded-sm p-3 h-full">
-      <button
-        onClick={() => navigate("/")}
-        className="p-2 rounded-full hover:bg-gray-200 w-fit"
-      >
-        <FaArrowLeft />
-      </button>
+      <ButtonBack
+      url="/exam/index"
+      />
+
 
       <div className="w-full flex items-center justify-center">
-        <div className="grid grid-cols-2 gap-5 w-9/10
+        <div className="grid grid-cols-4 gap-5 w-9/10
         ">
-        <button
-          onClick={() => navigate("/histories")}
+        <div
           className="bg-blue-500 rounded-lg flex flex-col items-center p-5 gap-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer"
         >
           <div className="rounded-full p-3 bg-white w-fit">
@@ -80,10 +81,10 @@ useEffect(() => {
             Số lượng bài thi thử
           </p>
            <p className="text-md font-bold text-white text-center">{quantity_exam} bài</p>
-        </button>
+        </div>
 
-        <button
-          onClick={() => navigate("/histories")}
+        <div
+          
           className="bg-yellow-500 rounded-lg flex flex-col items-center p-5 gap-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer"
         >
           <div className="rounded-full p-3 bg-white w-fit">
@@ -93,7 +94,34 @@ useEffect(() => {
             Tỉ lệ đạt
           </p>
           <p className="text-md font-bold text-white text-center">{percentage}%</p>
-        </button>
+        </div>
+
+
+                <div
+        
+          className="bg-green-500 rounded-lg flex flex-col items-center p-5 gap-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer"
+        >
+          <div className="rounded-full p-3 bg-white w-fit">
+            <FaClipboard />
+          </div>
+          <p className="text-xl font-bold text-white text-center">
+            Số bài đạt
+          </p>
+          <p className="text-md font-bold text-white text-center">{examPass}</p>
+        </div>
+        
+                        <div
+        
+          className="bg-red-500 rounded-lg flex flex-col items-center p-5 gap-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer"
+        >
+          <div className="rounded-full p-3 bg-white w-fit">
+            <FaClipboard />
+          </div>
+          <p className="text-xl font-bold text-white text-center">
+            Số bài không đạt
+          </p>
+          <p className="text-md font-bold text-white text-center">{quantity_exam-examPass}</p>
+        </div>
       </div>
       </div>
        <p className="text-2xl mt-3 font-bold">Bài thi thử</p>

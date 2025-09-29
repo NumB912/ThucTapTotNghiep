@@ -171,7 +171,6 @@ const ExamDetail: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         navigate(`/results/${data.id}`);
       } else {
         const text = await response.text();
@@ -192,7 +191,7 @@ const ExamDetail: React.FC = () => {
       <div className="flex items-center justify-center bg-gray-100 min-h-screen">
         <div className="result-content flex flex-col gap-2 bg-white w-[90%] h-[90%] border border-gray-100 rounded-sm p-5 shadow-sm">
         
-          
+    
 
           <div className="info">
             <div className="py-2 flex justify-between items-center">

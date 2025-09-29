@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router";
 import type { Topic } from "../../model/topic";
+import ButtonBack from "../../component/buttonBack";
 
 const Practice = () => {
   const navigate = useNavigate();
@@ -31,14 +32,7 @@ const Practice = () => {
     <div className="flex items-center justify-center ">
       {!loading ? (
         <div className="exam-content flex flex-col gap-3 bg-white w-full rounded-sm p-3 h-full">
-          <button
-            onClick={() => {
-              navigate(-1);
-            }}
-            className="p-2 rounded-full hover:bg-gray-200 w-fit"
-          >
-            <FaArrowLeft />
-          </button>
+          <ButtonBack/>
           <p className="text-blue-500 font-bold">
             Hãy luyện tập với các chương
           </p>

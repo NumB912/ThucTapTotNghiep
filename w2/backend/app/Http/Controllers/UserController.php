@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+
 class UserController extends Controller
 {
     public function index()
@@ -64,22 +65,23 @@ class UserController extends Controller
     }
 
 
-    public function avatar($filename){
-    $path = storage_path('app/public/users/' . $filename);
+    public function avatar($filename)
+    {
+        $path = storage_path('app/public/users/' . $filename);
 
-    if (!file_exists($path)) {
-        return response()->json(['error' => 'File not found'], 404);
+        if (!file_exists($path)) {
+            return response()->json(['error' => 'File not found'], 404);
+        }
+
+        return response()->file($path);
     }
 
-    return response()->file($path);
-    }
 
-
-      public function changePassword(Request $request)
+    public function changePassword(Request $request)
     {
         $user = $request->user();
 
-        if(!$user){
+        if (!$user) {
             return response()->json(['errors' => 'message'], 422);
         }
 

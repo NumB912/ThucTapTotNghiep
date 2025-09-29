@@ -29,12 +29,11 @@ const PracticeTopic = () => {
     getData();
   }, [id]);
 
-  // Cập nhật đáp án người dùng
   function handleSelectAnswer(id: number, answer: string) {
     setPractices((prev) => {
       const updated = prev.map((q) => (q.id === id ? { ...q, answer } : q));
       if (updated.every((q) => q.ansuser)) {
-        setShowModal(true); // hiện modal khi chọn hết câu
+        setShowModal(true); 
       }
       return updated;
     });
@@ -58,7 +57,7 @@ const PracticeTopic = () => {
 
           <div className="py-2 flex justify-between items-center">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/practice")}
               className="p-2 rounded-full hover:bg-gray-200 w-fit"
             >
               <FaArrowLeft />

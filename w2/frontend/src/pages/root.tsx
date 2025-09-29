@@ -13,6 +13,7 @@ const Root = () => {
         setToken("");
         setUser(null)
         alert("Đăng xuất thành công");
+        navigate("/")
       } else {
         alert("đăng xuất thất bại");
       }

@@ -3,6 +3,7 @@ import { FaArrowLeft, FaChartBar, FaClipboard, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../hook/userContext";
 import type { Result } from "../../model/result";
+import ButtonBack from "../../component/buttonBack";
 
 const ExamIndex = () => {
   const navigate = useNavigate();
@@ -71,19 +72,14 @@ const ExamIndex = () => {
 
   return !loading ? (
     <div className="exam-content flex flex-col gap-3 bg-white w-full rounded-sm p-3 h-full">
-      <button
-        onClick={() => navigate("/")}
-        className="p-2 rounded-full hover:bg-gray-200 w-fit"
-      >
-        <FaArrowLeft />
-      </button>
+ <ButtonBack/>
 
       <div className="h-full grid grid-cols-5 gap-3">
-        <button onClick={()=>navigate("/statistic")} className="bg-yellow-500 rounded-lg flex flex-col items-center gap-5 p-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer">
+        <button onClick={()=>navigate("/ranks")} className="bg-yellow-500 rounded-lg flex flex-col items-center gap-5 p-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer">
           <div className="rounded-full p-3 bg-white w-fit">
             <FaChartBar />
           </div>
-          <p className="text-xl font-bold text-white text-center">Thống kê</p>
+          <p className="text-xl font-bold text-white text-center">Xếp hạng</p>
         </button>
         <button onClick={()=>navigate("/histories")} className="bg-blue-500 rounded-lg flex flex-col items-center p-5 gap-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer">
           <div className="rounded-full p-3 bg-white w-fit">

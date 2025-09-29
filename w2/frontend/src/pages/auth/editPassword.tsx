@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import PasswordModal from "./modalPassword";
 import { useAuth } from "../../hook/userContext";
 import PasswordModalAdvance from "./modalPassword";
+import { FaArrowLeft } from "react-icons/fa";
 
 const ChangePassword = () => {
   const { changePassword, token } = useAuth();
@@ -17,7 +18,8 @@ const ChangePassword = () => {
   const [generatedPassword, setGeneratedPassword] = useState("");
 
   const generatePassword = (length = 12) => {
-    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+    const charset =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
     let password = "";
     for (let i = 0; i < length; i++) {
       const randomIndex = Math.floor(Math.random() * charset.length);
@@ -59,14 +61,22 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Đổi mật khẩu</h2>
+    <div className="max-w-2xl flex flex-col items-center gap-5 shadow-md rounded border border-gray-200 p-5 mx-auto mt-10">
+      <div className="w-full flex gap-2 mb-5">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full hover:bg-gray-200 w-fit"
+        >
+          <FaArrowLeft />
+        </button>
+        <h2 className="text-xl font-bold">Đổi mật khẩu</h2>
+      </div>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
           <label className="block text-sm mb-1">Mật khẩu hiện tại</label>
           <input
             type="password"
-            className="w-full border p-2 rounded"
+            className="border p-2 w-full border-gray-300 rounded"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             required
@@ -78,7 +88,7 @@ const ChangePassword = () => {
           <div className="flex gap-2">
             <input
               type="password"
-              className="w-full border p-2 rounded"
+              className="border p-2 w-full border-gray-300 rounded"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
@@ -86,7 +96,7 @@ const ChangePassword = () => {
             <button
               type="button"
               onClick={handleGeneratePassword}
-              className="bg-green-500 text-white px-3 rounded hover:bg-green-600"
+              className="bg-green-500 text-white px-3 rounded hover:bg-green-600 cursor-pointer"
             >
               Generate
             </button>
@@ -97,7 +107,7 @@ const ChangePassword = () => {
           <label className="block text-sm mb-1">Xác nhận mật khẩu mới</label>
           <input
             type="password"
-            className="w-full border p-2 rounded"
+            className="border p-2 w-full border-gray-300 rounded"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
@@ -106,14 +116,14 @@ const ChangePassword = () => {
 
         <button
           type="submit"
-          className="bg-blue-500 text-white font-bold py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+          className="bg-blue-500 text-white font-bold py-2 rounded hover:bg-blue-600 disabled:opacity-50 cursor-pointer"
           disabled={loading}
         >
           {loading ? "Đang xử lý..." : "Đổi mật khẩu"}
         </button>
       </form>
 
-<PasswordModalAdvance
+      <PasswordModalAdvance
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onConfirm={(pass) => {
