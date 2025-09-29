@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\AuthenticationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -46,5 +47,19 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        // Nếu là API thì trả JSON thay vì redirect
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        // Nếu bạn có trang login web thì:
+        // return redirect()->guest(route('login'));
+
+        // Còn không có trang login thì về trang chủ hoặc null
+        return response()->json(['message' => 'Unauthenticated.'], 401);
     }
 }

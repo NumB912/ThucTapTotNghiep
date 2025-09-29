@@ -4,6 +4,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import { useAuth } from "../../../hook/userContext";
 import Answer from "../../../component/ans";
 import type { Result } from "../../../model/result";
+import Loading from "../../../component/loading";
 
 const HistoryDetail = () => {
   const navigate = useNavigate();
@@ -145,68 +146,9 @@ const HistoryDetail = () => {
 
         </div>
       </div>
-    </div>:    <div className="flex items-center justify-center w-full h-10">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 100 50"
-        width="50"
-        height="25"
-      >
-        <circle
-          fill="#3B82F6"
-          stroke="#3B82F6"
-          strokeWidth="5"
-          r="5"
-          cx="20"
-          cy="16"
-        >
-          <animate
-            attributeName="cy"
-            calcMode="spline"
-            dur="1s"
-            values="16;34;16;"
-            keySplines=".5 0 .5 1;.5 0 .5 1"
-            repeatCount="indefinite"
-            begin="-.5s"
-          />
-        </circle>
-        <circle
-          fill="#3B82F6"
-          stroke="#3B82F6"
-          strokeWidth="5"
-          r="5"
-          cx="50"
-          cy="16"
-        >
-          <animate
-            attributeName="cy"
-            calcMode="spline"
-            dur="1s"
-            values="16;34;16;"
-            keySplines=".5 0 .5 1;.5 0 .5 1"
-            repeatCount="indefinite"
-            begin="-.2s"
-          />
-        </circle>
-        <circle
-          fill="#3B82F6"
-          stroke="#3B82F6"
-          strokeWidth="5"
-          r="5"
-          cx="80"
-          cy="16"
-        >
-          <animate
-            attributeName="cy"
-            calcMode="spline"
-            dur="1s"
-            values="16;34;16;"
-            keySplines=".5 0 .5 1;.5 0 .5 1"
-            repeatCount="indefinite"
-            begin="0s"
-          />
-        </circle>
-      </svg>
+    </div>:    
+    <div className="flex items-center justify-center w-full h-screen">
+      <Loading/>
     </div>
   );
 };

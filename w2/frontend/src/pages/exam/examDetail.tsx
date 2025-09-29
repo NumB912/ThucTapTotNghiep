@@ -8,6 +8,7 @@ import { useAuth } from "../../hook/userContext";
 import type { Result } from "../../model/result";
 import type { Question } from "../../model/question";
 import Modal from "../../component/modal/modal";
+import Loading from "../../component/loading";
 
 const ExamDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -18,18 +19,20 @@ const ExamDetail: React.FC = () => {
   const [idActive, setIdActive] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectLoading, setSelectloading] = useState<boolean>(false);
+  const [percentProgress, setpercentProgress] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: string;
   }>({});
+  const [currentAnswers,setCurrentAnswer] = useState<number>(0)
   const [isOpenModal, setOpenModal] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<string>("00:00");
   useEffect(() => {
+    const total_duration = 30 * 60;
     if (!result?.end_at) return;
     const targetDate = new Date(result.end_at);
     const intervalId = setInterval(() => {
       const now = new Date();
       const diffMs = targetDate.getTime() - now.getTime();
-
       if (diffMs <= 0) {
         setTimeLeft("00:00");
         clearInterval(intervalId);
@@ -40,7 +43,7 @@ const ExamDetail: React.FC = () => {
       const totalSeconds = Math.floor(diffMs / 1000);
       const minutes = Math.floor(totalSeconds / 60);
       const seconds = totalSeconds % 60;
-
+      setpercentProgress(totalSeconds / total_duration);
       setTimeLeft(
         `${minutes.toString().padStart(2, "0")}:${seconds
           .toString()
@@ -142,11 +145,40 @@ const ExamDetail: React.FC = () => {
       console.error("Lỗi khi lưu đáp án:", err);
     }
   }
+  
+  async function handleSetPass(){
+    if(!id && !token){
+      return;
+    }
+
+    try{
+
+      const response =await fetch(`http://127.0.0.1:8000/api/exam/${id}/pass`,{
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        navigate(`/results/${data.id}`);
+      } else {
+        const text = await response.text();
+        console.error("Lỗi khi kết thúc bài thi:", response.status, text);
+      }
+    } catch (err) {
+      console.error("Lỗi khi gửi request finish:", err);
+    }
+  }
 
   function handlePrevNext(step: number) {
     if (!result || !question) return;
     const idx = result.questions.findIndex((q) => q.id === question.id);
     const newIndex = idx + step;
+    setCurrentAnswer(newIndex+1)
     if (newIndex >= 0 && newIndex < result.questions.length) {
       const newQuestion = result.questions[newIndex];
       setQuestion(newQuestion);
@@ -185,14 +217,10 @@ const ExamDetail: React.FC = () => {
     navigate("/");
     return;
   }
-
   return !loading ? (
     <>
       <div className="flex items-center justify-center bg-gray-100 min-h-screen">
         <div className="result-content flex flex-col gap-2 bg-white w-[90%] h-[90%] border border-gray-100 rounded-sm p-5 shadow-sm">
-        
-    
-
           <div className="info">
             <div className="py-2 flex justify-between items-center">
               <div className="flex gap-3 text-[10px]">
@@ -242,9 +270,9 @@ const ExamDetail: React.FC = () => {
                 <p className="font-bold">{timeLeft}</p>
               </div>
             </div>
-            <div className="progress-bar w-full h-2 border border-blue-500 rounded">
+            <div className="progress-bar w-full h-2 border border-green-500 rounded mb-2">
               <div
-                className="progress bg-blue-500 h-full rounded"
+                className="progress bg-green-500 h-full rounded"
                 style={{
                   width: result
                     ? `${
@@ -253,6 +281,15 @@ const ExamDetail: React.FC = () => {
                         100
                       }%`
                     : "0%",
+                }}
+              />
+            </div>
+
+            <div className="progress-bar w-full h-2 border border-blue-500 rounded">
+              <div
+                className="progress bg-blue-500 h-full rounded"
+                style={{
+                  width: result ? `${percentProgress * 100}%` : "0%",
                 }}
               />
             </div>
@@ -275,6 +312,8 @@ const ExamDetail: React.FC = () => {
               <Button className="w-full" onClick={() => setOpenModal(true)}>
                 Kết thúc thi
               </Button>
+
+              <Button className="w-full bg-green-500" onClick={()=>{handleSetPass()}}>Click để đậu</Button>
             </div>
             <div className="right-content w-full ml-5">
               <p className="font-bold text-blue-500">
@@ -348,10 +387,12 @@ const ExamDetail: React.FC = () => {
               </div>
 
               <div className="flex justify-between w-full mt-5">
-                <Button className="w-fit" onClick={() => handlePrevNext(-1)}>
+                <Button className={`w-fit`} onClick={() => handlePrevNext(-1)}>
                   Câu trước
                 </Button>
-                <Button onClick={() => handlePrevNext(1)}>Câu sau</Button>
+                <Button className={`w-fit `} onClick={() => {handlePrevNext(1)
+           
+                }}>Câu sau</Button>
               </div>
             </div>
           </div>
@@ -359,88 +400,39 @@ const ExamDetail: React.FC = () => {
       </div>
 
       <Modal
-        className="bg-white"
+        className="bg-white p-4"
         isOpen={isOpenModal}
         setIsOpen={() => {
           setOpenModal(false);
         }}
       >
         <div className="flex flex-col gap-10">
-
           <p className="font-bold text-lg">Bạn có chắc là muốn nộp bài thi?</p>
           <div className="flex w-full justify-between">
-
-        <Button className="bg-blue-500 hover:bg-blue-400/80 p-3 rounded text-white font-bold" onClick={()=>{
-          setOpenModal(false)
-          handleFinish()}}>Nộp bài</Button>
-        <Button className="bg-red-500 hover:bg-red-400/80 p-3 rounded text-white font-bold" onClick={()=>{ setOpenModal(false)}}>Hủy</Button>
+            <Button
+              className="bg-blue-500 hover:bg-blue-400/80 p-3 rounded text-white font-bold"
+              onClick={() => {
+                setOpenModal(false);
+                handleFinish();
+              }}
+            >
+              Nộp bài
+            </Button>
+            <Button
+              className="bg-red-500 hover:bg-red-400/80 p-3 rounded text-white font-bold"
+              onClick={() => {
+                setOpenModal(false);
+              }}
+            >
+              Hủy
+            </Button>
           </div>
         </div>
       </Modal>
     </>
   ) : (
     <div className="flex items-center justify-center w-full h-screen">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 100 50"
-        width="50"
-        height="25"
-      >
-        <circle
-          fill="#3B82F6"
-          stroke="#3B82F6"
-          strokeWidth="5"
-          r="5"
-          cx="20"
-          cy="16"
-        >
-          <animate
-            attributeName="cy"
-            calcMode="spline"
-            dur="1s"
-            values="16;34;16;"
-            keySplines=".5 0 .5 1;.5 0 .5 1"
-            repeatCount="indefinite"
-            begin="-.5s"
-          />
-        </circle>
-        <circle
-          fill="#3B82F6"
-          stroke="#3B82F6"
-          strokeWidth="5"
-          r="5"
-          cx="50"
-          cy="16"
-        >
-          <animate
-            attributeName="cy"
-            calcMode="spline"
-            dur="1s"
-            values="16;34;16;"
-            keySplines=".5 0 .5 1;.5 0 .5 1"
-            repeatCount="indefinite"
-            begin="-.2s"
-          />
-        </circle>
-        <circle
-          fill="#3B82F6"
-          stroke="#3B82F6"
-          strokeWidth="5"
-          r="5"
-          cx="80"
-          cy="16"
-        >
-          <animate
-            attributeName="cy"
-            calcMode="spline"
-            dur="1s"
-            values="16;34;16;"
-            keySplines=".5 0 .5 1;.5 0 .5 1"
-            repeatCount="indefinite"
-            begin="0s"
-          />
-        </circle>
-      </svg>
+      <Loading />
     </div>
   );
 };

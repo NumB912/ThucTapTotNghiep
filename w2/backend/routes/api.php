@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatbotGeminiController;
+use App\Http\Controllers\ChatBoxController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\QuestionController;
@@ -40,7 +42,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/public/images/{filename}', [ImageController::class, 'show']);
 Route::get('/users/{filename}', [UserController::class, 'avatar']);
 Route::get('/rank',[ResultController::class,'rank']);
-
+Route::post('/chatbot', [ChatbotGeminiController::class, 'chat']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -53,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/exam/{resultID}', [ExamController::class, 'getExam']);
     Route::post('/exam/{resultID}/answer', [ExamController::class, 'saveAnswer']);
     Route::post('/exam/{resultID}/finish', [ExamController::class, 'finishExam']);
+    Route::post('/exam/{resultID}/pass',[ExamController::class, 'pass']);
 
     Route::get('/results', [ResultController::class, 'getResultUser']);
     Route::get('/results/{id}', [ResultController::class, 'result']);

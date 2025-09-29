@@ -7,7 +7,7 @@ interface CardProp{
 
 const Card = ({ className="",children}:CardProp) => {
   return (
-    <div className={`p-2 aspect-square border border-gray-300 cursor-pointer hover:shadow-2xl shadow-lg hover:scale-105 transition-transform duration-150 ${className}`}>{children}</div>
+    <div className={` p-2 aspect-square bg-white border border-gray-200 cursor-pointer hover:shadow-2xl shadow-lg hover:scale-105 transition-transform duration-150 ${className}`}>{children}</div>
   )
 }
 

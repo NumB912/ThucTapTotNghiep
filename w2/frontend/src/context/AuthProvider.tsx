@@ -8,6 +8,7 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [token, setToken] = useState(() => localStorage.getItem("token") || "");
+  const [isLoginModalOpen,setIsModalLogin] = useState<boolean>(false)
   const [user, setUser] = useState<User | null>(() => {
     const stored = localStorage.getItem("user");
     if (!stored) return null;
@@ -115,7 +116,6 @@ const changePassword = async (currentPassword: string, newPassword: string, toke
     });
 
     if (!res.ok) {
-      // Nếu backend trả HTML thì fallback
       const text = await res.text();
       try {
         const json = JSON.parse(text);
@@ -133,6 +133,23 @@ const changePassword = async (currentPassword: string, newPassword: string, toke
 };
 
 
+  function requireLogin(){ 
+
+    if(!token){
+      setIsModalLogin(true)
+      return true
+    }
+    else{
+      return false
+    }
+
+  }
+
+  function closeLoginModal(){
+    setIsModalLogin(false)
+  }
+
+
   return (
     <AuthContext.Provider
       value={{
@@ -147,6 +164,9 @@ const changePassword = async (currentPassword: string, newPassword: string, toke
         reset,
         error,
         setError,
+        closeLoginModal,
+        requireLogin,
+        isLoginModalOpen
       }}
     >
       {children}

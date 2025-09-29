@@ -12,7 +12,7 @@ const Info = () => {
   }
 
   return (
-    <div className="min-w-2xl flex flex-col items-center gap-5 shadow-md rounded border border-gray-200 p-5 mx-auto mt-10">
+    <div className="min-w-2xl flex flex-col items-center gap-5 shadow-md bg-white rounded border border-gray-200 p-5 mx-auto mt-10">
       <div className="w-full flex gap-2 mb-5">
       
         <button
@@ -26,10 +26,10 @@ const Info = () => {
       <img
         className="h-30 w-30 rounded-full object-cover mr-6 border border-gray-300"
         src={
-          user.img ||
-          "https://preview.redd.it/bocchi-the-rock-season-2-announcement-visual-v0-8g42euxvhaje1.jpeg?width=640&crop=smart&auto=webp&s=2a16ae419d38d22a3c5d56b4bd3393b926f482bd"
+          user?.img ||
+          "https://i0.wp.com/digitalhealthskills.com/wp-content/uploads/2022/11/fd35c-no-user-image-icon-27.png?fit=500%2C500&ssl=1"
         }
-        alt={user.userName}
+        alt={user?.userName}
       />
       <div className="grid-cols-2 grid gap-4 w-full">
         <div className="w-full">
@@ -37,7 +37,7 @@ const Info = () => {
           <input
             type="text"
             placeholder="Name"
-            value={user.name}
+            value={user?.name}
             className="border p-2 w-full border-gray-300 rounded"
             disabled
           />
@@ -48,7 +48,7 @@ const Info = () => {
           <input
             type="text"
             placeholder="Name"
-            value={user.email}
+            value={user?.email}
             className="border p-2 w-full border-gray-300 rounded"
             disabled
           />

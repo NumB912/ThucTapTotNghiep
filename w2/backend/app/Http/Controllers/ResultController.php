@@ -85,23 +85,23 @@ class ResultController extends Controller
         ]);
     }
 
-public function rank()
-{
-    $result = Result::with('user')
-        ->select(
-            'userid',
-            DB::raw('COUNT(*) as total_result'),
-            DB::raw('SUM(ispass::int) as total_pass')
-        )
-        ->groupBy('userid')
-        ->orderByDesc('total_result')
-        ->paginate(3);
-    $offset = ($result->currentPage() - 1) * $result->perPage();
-    $result->getCollection()->transform(function ($item, $index) use ($offset) {
-        $item->rank = $offset + $index + 1;
-        return $item;
-    });
+    public function rank()
+    {
+        $result = Result::with('user')
+            ->select(
+                'userid',
+                DB::raw('COUNT(*) as total_result'),
+                DB::raw('SUM(ispass::int) as total_pass')
+            )
+            ->groupBy('userid')
+            ->orderByDesc('total_result')
+            ->paginate(3);
+        $offset = ($result->currentPage() - 1) * $result->perPage();
+        $result->getCollection()->transform(function ($item, $index) use ($offset) {
+            $item->rank = $offset + $index + 1;
+            return $item;
+        });
 
-    return response()->json($result);
-}
+        return response()->json($result);
+    }
 }

@@ -136,6 +136,22 @@ class ExamController extends Controller
         return response()->json($result);
     }
 
+    public function pass($resultID){
+         $result = Result::findOrFail($resultID);
+
+        if (!$result) {
+            return response()->json(["message", "không tồn tại bài ghi"], 404);
+        }
+
+        $result->score = 0;
+        $result->status = 'complete';
+        $result->submitted_at = now();
+        $result->ispass = true;
+        $result->save();
+
+        return response()->json($result);
+    }
+
     public function result($id)
     {
         $result = Result::find($id);

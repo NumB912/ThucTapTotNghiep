@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { useAuth } from "../../hook/userContext";
 import { useNavigate } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
+import ModalLoading from "../../component/modalLoading";
 
 const EditProfile: React.FC = () => {
   const { user, updateUser, token } = useAuth();
@@ -11,7 +12,7 @@ const EditProfile: React.FC = () => {
   const [email, setEmail] = useState(user?.email || "");
   const [avatar, setAvatar] = useState<File | null>(null);
   const [avatarUrl, setAvatarUrl] = useState(user?.img || "");
-
+  const [loading,setLoading] = useState<boolean>(false)
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewUrl = avatar ? URL.createObjectURL(avatar) : avatarUrl || "";
 
@@ -27,8 +28,9 @@ const EditProfile: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
-
+      setLoading(true)
       const data = await res.json();
+
       if (!res.ok) throw new Error(data.message || "Upload avatar thất bại");
       console.log(data.img);
       return data.img;
@@ -36,13 +38,15 @@ const EditProfile: React.FC = () => {
       console.error(err);
       alert("Có lỗi khi upload avatar: " + err);
       return null;
+    }finally{
+           setLoading(false)
     }
   };
 
   const handleSave = async () => {
     try {
+      setLoading(true)
       const uploadedAvatarUrl = await handleAvatarUpload();
-
       await updateUser(
         {
           name,
@@ -57,11 +61,13 @@ const EditProfile: React.FC = () => {
     } catch (err) {
       console.error(err);
       alert("Có lỗi khi cập nhật");
+    }finally{
+ setLoading(false)
     }
   };
 
   return (
-    <div className="min-w-2xl flex flex-col items-center gap-5 shadow-md rounded border border-gray-200 p-5 mx-auto mt-10">
+    <div className="min-w-2xl flex flex-col items-center gap-5 shadow-md rounded bg-white border border-gray-200 p-5 mx-auto mt-10">
       <div className="w-full flex gap-2 mb-5">
         <button
           onClick={() => navigate(-1)}
@@ -128,6 +134,8 @@ const EditProfile: React.FC = () => {
           Lưu
         </button>
       </div>
+
+      <ModalLoading isOpen={loading} setIsOpen={()=>{setLoading(false)}}/>
     </div>
   );
 };

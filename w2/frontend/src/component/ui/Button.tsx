@@ -4,11 +4,12 @@ interface ButtonProp{
     onClick:()=>void;
     children:ReactNode;
     className?:string
+    isDisable?:boolean;
 }
 
-const Button = ({onClick,children,className}:ButtonProp) => {
+const Button = ({onClick,children,className,isDisable=false}:ButtonProp) => {
   return (
-    <button onClick={onClick} className={`w-fit bg-blue-500 text-white rounded p-1 text-sm cursor-pointer  ${className}`}>
+    <button onClick={onClick} disabled={isDisable} className={`${isDisable?"bg-blue-100":"bg-blue-500"} w-fit  text-white rounded p-1 text-sm cursor-pointer  ${className}`}>
         {children}
     </button>
   )

@@ -31,7 +31,7 @@ const Modal = ({ isOpen, setIsOpen, children,className="bg-white" }:ModalProp) =
       }}
     >
       <div
-        className={` p-7 rounded-lg bg-white  ${className}`}
+        className={`rounded-lg bg-white  ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

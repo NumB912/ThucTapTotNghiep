@@ -4,10 +4,11 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../../hook/userContext";
 import type { Result } from "../../model/result";
 import ButtonBack from "../../component/buttonBack";
+import Loading from "../../component/loading";
 
 const ExamIndex = () => {
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token,requireLogin } = useAuth();
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   async function handleCreateNewExam() {
@@ -39,9 +40,8 @@ const ExamIndex = () => {
 
   useEffect(() => {
     async function getResults() {
-      if (!token) {
-        alert("Vui lòng đăng nhập");
-        navigate("/");
+      if(requireLogin()){
+        navigate("/")
         return;
       }
       try {
@@ -71,17 +71,23 @@ const ExamIndex = () => {
   }, [token, navigate]);
 
   return !loading ? (
-    <div className="exam-content flex flex-col gap-3 bg-white w-full rounded-sm p-3 h-full">
- <ButtonBack/>
+    <div className="exam-content flex flex-col gap-3 bg-white w-full rounded-sm p-3 h-full border border-gray-200 shadow">
+      <ButtonBack />
 
-      <div className="h-full grid grid-cols-5 gap-3">
-        <button onClick={()=>navigate("/ranks")} className="bg-yellow-500 rounded-lg flex flex-col items-center gap-5 p-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer">
+      <div className=" grid grid-cols-5 gap-3">
+        <button
+          onClick={() => navigate("/ranks")}
+          className="bg-yellow-500 rounded-lg flex flex-col items-center gap-5 p-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer"
+        >
           <div className="rounded-full p-3 bg-white w-fit">
             <FaChartBar />
           </div>
           <p className="text-xl font-bold text-white text-center">Xếp hạng</p>
         </button>
-        <button onClick={()=>navigate("/histories")} className="bg-blue-500 rounded-lg flex flex-col items-center p-5 gap-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer">
+        <button
+          onClick={() => navigate("/histories")}
+          className="bg-blue-500 rounded-lg flex flex-col items-center p-5 gap-5 hover:shadow-lg hover:scale-105 transition-all duration-150 cursor-pointer"
+        >
           <div className="rounded-full p-3 bg-white w-fit">
             <FaClipboard />
           </div>
@@ -118,68 +124,8 @@ const ExamIndex = () => {
       </div>
     </div>
   ) : (
-    <div className="flex items-center justify-center w-full h-10">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 100 50"
-        width="50"
-        height="25"
-      >
-        <circle
-          fill="#3B82F6"
-          stroke="#3B82F6"
-          strokeWidth="5"
-          r="5"
-          cx="20"
-          cy="16"
-        >
-          <animate
-            attributeName="cy"
-            calcMode="spline"
-            dur="1s"
-            values="16;34;16;"
-            keySplines=".5 0 .5 1;.5 0 .5 1"
-            repeatCount="indefinite"
-            begin="-.5s"
-          />
-        </circle>
-        <circle
-          fill="#3B82F6"
-          stroke="#3B82F6"
-          strokeWidth="5"
-          r="5"
-          cx="50"
-          cy="16"
-        >
-          <animate
-            attributeName="cy"
-            calcMode="spline"
-            dur="1s"
-            values="16;34;16;"
-            keySplines=".5 0 .5 1;.5 0 .5 1"
-            repeatCount="indefinite"
-            begin="-.2s"
-          />
-        </circle>
-        <circle
-          fill="#3B82F6"
-          stroke="#3B82F6"
-          strokeWidth="5"
-          r="5"
-          cx="80"
-          cy="16"
-        >
-          <animate
-            attributeName="cy"
-            calcMode="spline"
-            dur="1s"
-            values="16;34;16;"
-            keySplines=".5 0 .5 1;.5 0 .5 1"
-            repeatCount="indefinite"
-            begin="0s"
-          />
-        </circle>
-      </svg>
+    <div className="flex items-center justify-center w-full h-screen">
+      <Loading />
     </div>
   );
 };

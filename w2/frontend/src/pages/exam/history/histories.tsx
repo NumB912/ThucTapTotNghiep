@@ -5,6 +5,7 @@ import ExamCard from "../../../component/examCard";
 import { useAuth } from "../../../hook/userContext";
 import type { Result } from "../../../model/result";
 import ButtonBack from "../../../component/buttonBack";
+import Loading from "../../../component/loading";
 
 const Histories = () => {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ useEffect(() => {
 
 
   return (
-    !loading?<div className="exam-content flex flex-col gap-3 bg-white w-full rounded-sm p-3 h-full">
+    !loading?<div className="exam-content flex flex-col gap-3 bg-white w-full rounded-sm p-3 h-full border border-gray-200 shadow">
       <ButtonBack
       url="/exam/index"
       />
@@ -125,7 +126,9 @@ useEffect(() => {
       </div>
       </div>
        <p className="text-2xl mt-3 font-bold">Bài thi thử</p>
-      <div className="h-full grid grid-cols-5 gap-3">
+      {
+        results.length > 0 ?
+              <div className="h-full grid grid-cols-5 gap-3">
         {results?.map((result) => {
           const now = new Date();
           const endTime = new Date(result.end_at);
@@ -145,69 +148,12 @@ useEffect(() => {
             );
           }
         })}
+      </div>:<div className="w-full m-auto">
+          <p className="w-fit text-2xl text-gray-400 mx-auto">Bạn chưa thi lần nào cả </p>
       </div>
-    </div>:    <div className="flex items-center justify-center w-full h-10">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 100 50"
-        width="50"
-        height="25"
-      >
-        <circle
-          fill="#3B82F6"
-          stroke="#3B82F6"
-          strokeWidth="5"
-          r="5"
-          cx="20"
-          cy="16"
-        >
-          <animate
-            attributeName="cy"
-            calcMode="spline"
-            dur="1s"
-            values="16;34;16;"
-            keySplines=".5 0 .5 1;.5 0 .5 1"
-            repeatCount="indefinite"
-            begin="-.5s"
-          />
-        </circle>
-        <circle
-          fill="#3B82F6"
-          stroke="#3B82F6"
-          strokeWidth="5"
-          r="5"
-          cx="50"
-          cy="16"
-        >
-          <animate
-            attributeName="cy"
-            calcMode="spline"
-            dur="1s"
-            values="16;34;16;"
-            keySplines=".5 0 .5 1;.5 0 .5 1"
-            repeatCount="indefinite"
-            begin="-.2s"
-          />
-        </circle>
-        <circle
-          fill="#3B82F6"
-          stroke="#3B82F6"
-          strokeWidth="5"
-          r="5"
-          cx="80"
-          cy="16"
-        >
-          <animate
-            attributeName="cy"
-            calcMode="spline"
-            dur="1s"
-            values="16;34;16;"
-            keySplines=".5 0 .5 1;.5 0 .5 1"
-            repeatCount="indefinite"
-            begin="0s"
-          />
-        </circle>
-      </svg>
+      }
+    </div>:    <div className="flex items-center justify-center w-full h-screen">
+        <Loading/>
     </div>
   );
 };

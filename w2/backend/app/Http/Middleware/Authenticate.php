@@ -12,10 +12,14 @@ class Authenticate extends Middleware
      * @param  \Illuminate\Http\Request  $request
      * @return string|null
      */
-    protected function redirectTo($request)
-    {
-        if (! $request->expectsJson()) {
-            return route('login');
-        }
+protected function redirectTo($request)
+{
+    // Nếu là request API thì trả về null để Laravel trả 401 JSON
+    if ($request->expectsJson()) {
+        return null;
     }
+
+    // Nếu bạn có web login thì mới trả về route('login')
+    // return route('login');
+}
 }

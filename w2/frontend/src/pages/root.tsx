@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { useAuth } from "../hook/userContext";
+import ModalLogin from "../component/modalLogin";
 
 const Root = () => {
   const navigate = useNavigate();
@@ -23,14 +24,12 @@ const Root = () => {
     }
   };
 
-  useEffect(()=>{
-    console.log(user)
-  },[user,token])
+
 
   return (
     <div className="flex items-center justify-center ">
-      <div className="exam-content flex flex-col gap-3 bg-white w-full rounded-sm p-3 h-full">
-        <div className="flex justify-end items-center w-full gap-2 p-2 rounded shadow border border-gray-200">
+      <div className="exam-content flex flex-col gap-3 bg-gray-100 w-full rounded-sm p-3 h-screen">
+        <div className="flex justify-end items-center w-full gap-2 p-2 rounded bg-white shadow border border-gray-200">
           <div className=" rounded-full flex items-center gap-0">
             {!token ? (
               <>
@@ -62,7 +61,7 @@ const Root = () => {
                   </button>
                   
                   <button className="cursor-pointer" onClick={()=>navigate("/Info")}>
-                    <img src={user?.img||"https://preview.redd.it/bocchi-the-rock-season-2-announcement-visual-v0-8g42euxvhaje1.jpeg?width=640&crop=smart&auto=webp&s=2a16ae419d38d22a3c5d56b4bd3393b926f482bd"} className="rounded-full aspect-square w-9"/>
+                    <img src={user?.img||"https://i0.wp.com/digitalhealthskills.com/wp-content/uploads/2022/11/fd35c-no-user-image-icon-27.png?fit=500%2C500&ssl=1"} className="rounded-full aspect-square w-9"/>
                         
                   </button>
           
@@ -73,6 +72,7 @@ const Root = () => {
         </div>
 
         <Outlet />
+                <ModalLogin />
       </div>
     </div>
   );

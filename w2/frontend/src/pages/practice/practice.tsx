@@ -3,6 +3,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router";
 import type { Topic } from "../../model/topic";
 import ButtonBack from "../../component/buttonBack";
+import Loading from "../../component/loading";
 
 const Practice = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Practice = () => {
           console.log("loi");
         }
       } catch (e) {
-        console.error("lỗi trong quá trình thực hiện",e);
+        console.error("lỗi trong quá trình thực hiện", e);
       } finally {
         setLoading(false);
       }
@@ -31,8 +32,8 @@ const Practice = () => {
   return (
     <div className="flex items-center justify-center ">
       {!loading ? (
-        <div className="exam-content flex flex-col gap-3 bg-white w-full rounded-sm p-3 h-full">
-          <ButtonBack/>
+        <div className="exam-content flex flex-col gap-3 border border-gray-200 bg-white w-full rounded shadow p-3 h-full">
+          <ButtonBack />
           <p className="text-blue-500 font-bold">
             Hãy luyện tập với các chương
           </p>
@@ -53,44 +54,9 @@ const Practice = () => {
           </div>
         </div>
       ) : (
-<div className="flex items-center justify-center w-full h-10">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50" width="50" height="25">
-    <circle fill="#3B82F6" stroke="#3B82F6" strokeWidth="5" r="5" cx="20" cy="16">
-      <animate
-        attributeName="cy"
-        calcMode="spline"
-        dur="1s"
-        values="16;34;16;"
-        keySplines=".5 0 .5 1;.5 0 .5 1"
-        repeatCount="indefinite"
-        begin="-.5s"
-      />
-    </circle>
-    <circle fill="#3B82F6" stroke="#3B82F6" strokeWidth="5" r="5" cx="50" cy="16">
-      <animate
-        attributeName="cy"
-        calcMode="spline"
-        dur="1s"
-        values="16;34;16;"
-        keySplines=".5 0 .5 1;.5 0 .5 1"
-        repeatCount="indefinite"
-        begin="-.2s"
-      />
-    </circle>
-    <circle fill="#3B82F6" stroke="#3B82F6" strokeWidth="5" r="5" cx="80" cy="16">
-      <animate
-        attributeName="cy"
-        calcMode="spline"
-        dur="1s"
-        values="16;34;16;"
-        keySplines=".5 0 .5 1;.5 0 .5 1"
-        repeatCount="indefinite"
-        begin="0s"
-      />
-    </circle>
-  </svg>
-</div>
-
+        <div className="flex items-center justify-center w-full h-screen">
+          <Loading />
+        </div>
       )}
     </div>
   );

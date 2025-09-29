@@ -16,6 +16,7 @@ import EditProfile from "../pages/auth/edit";
 import Result from "../pages/exam/result/result";
 import ChangePassword from "../pages/auth/editPassword";
 import Ranks from "../pages/rank/rank";
+import Chatbot from "../pages/contact/ChatBot";
 const route = createBrowserRouter([
   {
     path: "/",
@@ -59,6 +60,10 @@ const route = createBrowserRouter([
     ],
     element: <Root />,
   },
+  {
+        path:"/ChatBot",
+        element:<Chatbot/>
+      },
   {
     path: "/Exams/exam/:id",
     element: <ExamDetail />,

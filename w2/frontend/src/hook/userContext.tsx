@@ -16,6 +16,9 @@ export interface AuthContextType {
   changePassword: (currentPassword: string, newPassword: string, token: string) => Promise<boolean>;
   error: string;
   setError: (e: string) => void;
+  isLoginModalOpen:boolean;
+  closeLoginModal:()=>void;
+  requireLogin:()=>boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);

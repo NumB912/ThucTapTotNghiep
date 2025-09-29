@@ -4,11 +4,11 @@ import PasswordModal from "./modalPassword";
 import { useAuth } from "../../hook/userContext";
 import PasswordModalAdvance from "./modalPassword";
 import { FaArrowLeft } from "react-icons/fa";
+import ModalLoading from "../../component/modalLoading";
 
 const ChangePassword = () => {
   const { changePassword, token } = useAuth();
   const navigate = useNavigate();
-
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -16,6 +16,7 @@ const ChangePassword = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [generatedPassword, setGeneratedPassword] = useState("");
+  const [error,setError] = useState("")
 
   const generatePassword = (length = 12) => {
     const charset =
@@ -34,17 +35,20 @@ const ChangePassword = () => {
     setModalVisible(true);
   };
 
-  const handleConfirmPassword = () => {
-    setNewPassword(generatedPassword);
-    setConfirmPassword(generatedPassword);
-    setModalVisible(false);
-  };
+  // const handleConfirmPassword = () => {
+  //   setNewPassword(generatedPassword);
+  //   setConfirmPassword(generatedPassword);
+  //   setModalVisible(false);
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      alert("Mật khẩu mới và xác nhận không khớp");
+      setError("Mật khẩu không trùng với mật khẩu xác nhận")
+      setConfirmPassword("")
+      setCurrentPassword("")
+      setNewPassword("")
       return;
     }
 
@@ -61,7 +65,7 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="max-w-2xl flex flex-col items-center gap-5 shadow-md rounded border border-gray-200 p-5 mx-auto mt-10">
+    <div className="max-w-2xl flex flex-col items-center gap-5 shadow-md rounded bg-white border border-gray-200 p-5 mx-auto mt-10">
       <div className="w-full flex gap-2 mb-5">
         <button
           onClick={() => navigate(-1)}
@@ -71,7 +75,9 @@ const ChangePassword = () => {
         </button>
         <h2 className="text-xl font-bold">Đổi mật khẩu</h2>
       </div>
+
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {error!=""?<p className="text-sm font-bold text-red-500" >{error}</p>:""}
         <div>
           <label className="block text-sm mb-1">Mật khẩu hiện tại</label>
           <input
@@ -123,6 +129,8 @@ const ChangePassword = () => {
         </button>
       </form>
 
+      <ModalLoading isOpen={loading} setIsOpen={()=>setLoading(false)}/>
+      
       <PasswordModalAdvance
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
