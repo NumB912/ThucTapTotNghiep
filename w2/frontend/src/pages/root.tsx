@@ -5,16 +5,16 @@ import ModalLogin from "../component/modalLogin";
 
 const Root = () => {
   const navigate = useNavigate();
-  const { token, setToken,setUser,logout,user } = useAuth();
+  const { token, setToken, setUser, logout, user } = useAuth();
 
   const handleLogout = async () => {
     try {
-      const ok = await logout(token)
+      const ok = await logout(token);
       if (ok) {
         setToken("");
-        setUser(null)
+        setUser(null);
         alert("Đăng xuất thành công");
-        navigate("/")
+        navigate("/");
       } else {
         alert("đăng xuất thất bại");
       }
@@ -23,8 +23,6 @@ const Root = () => {
       alert("Có lỗi xảy ra khi logout");
     }
   };
-
-
 
   return (
     <div className="flex items-center justify-center ">
@@ -59,12 +57,19 @@ const Root = () => {
                   >
                     Sign out
                   </button>
-                  
-                  <button className="cursor-pointer" onClick={()=>navigate("/Info")}>
-                    <img src={user?.img||"https://i0.wp.com/digitalhealthskills.com/wp-content/uploads/2022/11/fd35c-no-user-image-icon-27.png?fit=500%2C500&ssl=1"} className="rounded-full aspect-square w-9"/>
-                        
+
+                  <button
+                    className="cursor-pointer"
+                    onClick={() => navigate("/Info")}
+                  >
+                    <img
+                      src={
+                        user?.img ||
+                        "https://i0.wp.com/digitalhealthskills.com/wp-content/uploads/2022/11/fd35c-no-user-image-icon-27.png?fit=500%2C500&ssl=1"
+                      }
+                      className="rounded-full aspect-square w-9"
+                    />
                   </button>
-          
                 </div>
               </>
             )}
@@ -72,7 +77,7 @@ const Root = () => {
         </div>
 
         <Outlet />
-                <ModalLogin />
+        <ModalLogin />
       </div>
     </div>
   );

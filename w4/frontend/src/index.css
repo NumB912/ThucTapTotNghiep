@@ -2,8 +2,5 @@
 
 .card-event{
     background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 20%, rgba(255, 255, 255, 0) 70%);
-    border-bottom-left-radius: inherit;
-    border-bottom-right-radius: inherit;
-    padding: min(max(1rem, 2vw), 1.5rem);
     z-index: 1;
 }

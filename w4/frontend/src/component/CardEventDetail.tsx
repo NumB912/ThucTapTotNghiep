@@ -1,13 +1,11 @@
 import React from "react";
 
-const CardEventChild = () => {
+const CardEventDetail = () => {
   return (
-    <div className="relative h-80 rounded-lg overflow-hidden shadow-2xl">
-
+    <div className="relative h-120 rounded-lg overflow-hidden shadow-2xl">
       <div className="absolute top-2 left-2 p-2 text-white z-10 bg-purple-500/80 rounded-lg">
         <p>Web sep 17th, 2025</p>
       </div>
-
 
       <img
         src="https://www.daysoftheyear.com/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=900%2Cq=85%2Cw=2192/wp-content/uploads/international-podcast-day.jpg"
@@ -23,4 +21,4 @@ const CardEventChild = () => {
   );
 };
 
-export default CardEventChild;
+export default CardEventDetail;

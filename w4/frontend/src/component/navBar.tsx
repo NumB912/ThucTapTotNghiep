@@ -22,6 +22,9 @@ const Navbar = () => {
         <button className="bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700 transition">
           Sign In
         </button>
+              <button className="bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700 transition">
+          Sign Up
+        </button>
       </div>
     </div>
   )

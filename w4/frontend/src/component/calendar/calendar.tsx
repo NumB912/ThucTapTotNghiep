@@ -6,8 +6,9 @@ const Calendar = () => {
   const [activeDay,setActiveDay] = useState<number>(0)
 
   return (
-            <div className="bg-white shadow border p-5 border-gray-200 rounded-lg">
-          <div className="flex justify-between items-center">
+            <div className="bg-white shadow border p-5 border-gray-200 rounded-lg h-fit">
+            <div>
+                        <div className="flex justify-between items-center">
             <button className="bg-purple-500 aspect-square w-10 text-white rounded-full cursor-pointer hover:bg-pink-500 hover:text-white">
               <FaArrowLeft className="w-full text-center" />
             </button>
@@ -27,6 +28,7 @@ const Calendar = () => {
               <Day day={i} index={i} active={activeDay==i} onFocus={()=>setActiveDay(i)}/>
             ))}
           </div>
+            </div>
         </div>
   )
 }
