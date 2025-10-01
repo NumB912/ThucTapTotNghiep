@@ -7,4 +7,5 @@ export interface User{
     UpdateAt:Date,
     img?:string;
     name:string;
+    favorites?:Event[]
 }

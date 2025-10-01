@@ -76,31 +76,12 @@ class UserController extends Controller
         return response()->file($path);
     }
 
-
-    public function changePassword(Request $request)
-    {
-        $user = $request->user();
-
-        if (!$user) {
-            return response()->json(['errors' => 'message'], 422);
+    public function user($id){
+        $user = User::find($id);
+        if(!$user){
+            return response()->json(['message'=>'Lỗi không thể truy cập thông tin người dùng']);
         }
 
-        $validator = Validator::make($request->all(), [
-            'current_password' => 'required|string',
-            'new_password' => 'required|string|min:6|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        if (!Hash::check($request->current_password, $user->password)) {
-            return response()->json(['message' => 'Mật khẩu hiện tại không đúng'], 400);
-        }
-
-        $user->password = Hash::make($request->new_password);
-        $user->save();
-
-        return response()->json(['message' => 'Đổi mật khẩu thành công']);
+        return response()->json($user);
     }
 }

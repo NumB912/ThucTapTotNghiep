@@ -2,11 +2,14 @@ import React from "react";
 import "./App.css";
 import { RouterProvider } from "react-router";
 import router from "./routes/route";
-import { AuthProvider } from "./context/AuthProvider";
+import { AuthProvider } from "./context/authProvider";
+import { CalendarProvider } from "./context/calendarProvider";
 function App() {
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <CalendarProvider>
+        <RouterProvider router={router} />
+      </CalendarProvider>
     </AuthProvider>
   );
 }

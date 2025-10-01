@@ -10,10 +10,11 @@ const SignIn = () => {
   const {login,error,setError} = useAuth();
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // ngăn reload trang
+    e.preventDefault(); 
     const ok = await login(userName, password);
     if (!ok) setError("Sai tên đăng nhập hoặc mật khẩu");
     else {
+      console.log(ok)
       setError("")
       navigate("/")
     };

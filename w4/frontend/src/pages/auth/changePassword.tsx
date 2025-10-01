@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../context/userContext"; 
+import { useAuth } from "../../context/userContext";
 import PasswordModalAdvance from "../../component/modal/modalPassword";
 import { FaArrowLeft } from "react-icons/fa";
-import ModalLoading from "../../component/modal/modalLoading"; 
+import ModalLoading from "../../component/modal/modalLoading";
+import ModalMessage from "../../component/modal/modalMessage";
 
 const ChangePassword = () => {
   const { changePassword, token } = useAuth();
@@ -12,10 +13,13 @@ const ChangePassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState<"success" | "error">("success");
 
   const [modalVisible, setModalVisible] = useState(false);
   const [generatedPassword, setGeneratedPassword] = useState("");
-  const [error,setError] = useState("")
+  const [error, setError] = useState("");
 
   const generatePassword = (length = 12) => {
     const charset =
@@ -40,34 +44,40 @@ const ChangePassword = () => {
   //   setModalVisible(false);
   // };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (newPassword !== confirmPassword) {
-      setError("Mật khẩu không trùng với mật khẩu xác nhận")
-      setConfirmPassword("")
-      setCurrentPassword("")
-      setNewPassword("")
-      return;
-    }
+  if (newPassword !== confirmPassword) {
+    setError("Mật khẩu không trùng với mật khẩu xác nhận");
+    setConfirmPassword("");
+    setCurrentPassword("");
+    setNewPassword("");
+    return;
+  }
 
-    setLoading(true);
-    const ok = await changePassword(currentPassword, newPassword, token);
-    setLoading(false);
+  setLoading(true);
+  const ok = await changePassword(currentPassword, newPassword, token);
+  setLoading(false);
 
-    if (ok) {
-      alert("Đổi mật khẩu thành công");
-      navigate("/Info");
-    } else {
-      alert("Đổi mật khẩu thất bại. Vui lòng kiểm tra lại mật khẩu cũ");
-    }
-  };
+  if (ok) {
+    setModalType("success");
+    setModalMessage("Đổi mật khẩu thành công");
+    setIsModalOpen(true);
+    // Nếu muốn tự redirect sau vài giây:
+    setTimeout(() => navigate("/profile"), 2000);
+  } else {
+    setModalType("error");
+    setModalMessage("Đổi mật khẩu thất bại. Vui lòng kiểm tra lại mật khẩu cũ");
+    setIsModalOpen(true);
+  }
+};
+
 
   return (
     <div className="w-fit flex flex-col items-center gap-5 shadow-md rounded bg-white border border-gray-200 p-5 mx-auto mt-10">
       <div className="w-full flex gap-2 mb-5">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/profile")}
           className="p-2 rounded-full hover:bg-gray-200 w-fit"
         >
           <FaArrowLeft />
@@ -76,7 +86,11 @@ const ChangePassword = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {error!=""?<p className="text-sm font-bold text-red-500" >{error}</p>:""}
+        {error != "" ? (
+          <p className="text-sm font-bold text-red-500">{error}</p>
+        ) : (
+          ""
+        )}
         <div>
           <label className="block text-sm mb-1">Mật khẩu hiện tại</label>
           <input
@@ -128,8 +142,14 @@ const ChangePassword = () => {
         </button>
       </form>
 
-      <ModalLoading isOpen={loading} setIsOpen={()=>setLoading(false)}/>
-      
+      <ModalLoading isOpen={loading} setIsOpen={() => setLoading(false)} />
+      <ModalMessage
+        isOpen={isModalOpen}
+        setIsOpen={() => setIsModalOpen(false)}
+        message={modalMessage}
+        type={modalType}
+      />
+
       <PasswordModalAdvance
         visible={modalVisible}
         onClose={() => setModalVisible(false)}

@@ -16,7 +16,7 @@ const Profile = () => {
       <div className="w-full flex gap-2 mb-5">
       
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
           className="p-2 rounded-full hover:bg-gray-200 w-fit"
         >
           <FaArrowLeft />

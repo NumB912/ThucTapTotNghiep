@@ -3,6 +3,7 @@ import { useAuth } from "../../context/userContext";
 import { useNavigate } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
 import ModalLoading from "../../component/modal/modalLoading";
+import ModalMessage from "../../component/modal/modalMessage";
 
 const EditProfile: React.FC = () => {
   const { user, updateUser, token } = useAuth();
@@ -12,8 +13,11 @@ const EditProfile: React.FC = () => {
   const [email, setEmail] = useState(user?.email || "");
   const [avatar, setAvatar] = useState<File | null>(null);
   const [avatarUrl, setAvatarUrl] = useState(user?.img || "");
-  const [loading,setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState<"success" | "error">("success");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const previewUrl = avatar ? URL.createObjectURL(avatar) : avatarUrl || "";
 
   const handleAvatarUpload = async (): Promise<string | null> => {
@@ -28,7 +32,7 @@ const EditProfile: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
-      setLoading(true)
+      setLoading(true);
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.message || "Upload avatar thất bại");
@@ -38,14 +42,14 @@ const EditProfile: React.FC = () => {
       console.error(err);
       alert("Có lỗi khi upload avatar: " + err);
       return null;
-    }finally{
-           setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSave = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const uploadedAvatarUrl = await handleAvatarUpload();
       await updateUser(
         {
@@ -56,13 +60,16 @@ const EditProfile: React.FC = () => {
         token
       );
 
-      alert("Cập nhật thành công");
-      navigate("/info");
+      setModalType("success");
+      setModalMessage("Cập nhật thành công");
+      setIsModalOpen(true);
     } catch (err) {
       console.error(err);
-      alert("Có lỗi khi cập nhật");
-    }finally{
- setLoading(false)
+      setModalType("error");
+      setModalMessage("Có lỗi khi cập nhật");
+      setIsModalOpen(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,7 +77,7 @@ const EditProfile: React.FC = () => {
     <div className=" w-1/2 flex flex-col items-center gap-5 shadow-md rounded bg-white border border-gray-200 p-5 mx-auto mt-10">
       <div className="w-full flex gap-2 mb-5">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/profile")}
           className="p-2 rounded-full hover:bg-gray-200 w-fit"
         >
           <FaArrowLeft />
@@ -135,7 +142,19 @@ const EditProfile: React.FC = () => {
         </button>
       </div>
 
-      <ModalLoading isOpen={loading} setIsOpen={()=>{setLoading(false)}}/>
+      <ModalMessage
+        isOpen={isModalOpen}
+        setIsOpen={() => setIsModalOpen(false)}
+        message={modalMessage}
+        type={modalType}
+      />
+
+      <ModalLoading
+        isOpen={loading}
+        setIsOpen={() => {
+          setLoading(false);
+        }}
+      />
     </div>
   );
 };
