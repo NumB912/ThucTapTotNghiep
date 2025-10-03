@@ -15,32 +15,61 @@ class FavoriteController extends Controller
         if (!$user) {
             return response()->json(['errors' => 'message'], 422);
         }
-        $favorites = Favorite::with(['event'])->where('user_id',$user->id)->get();
-        return response()->json($favorites);
-    }
 
+        $events = Favorite::with(['event.image'])
+            ->where('user_id', $user->id)
+            ->get()
+            ->pluck('event');
+
+        return response()->json($events);
+    }
     public function addFavorite(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'event_id' => 'required|exists:event,id',
         ]);
 
-        $favorite = Favorite::create([
-            'user_id' => $request->user_id,
+        $userId = auth()->id();
+
+        $favorite = Favorite::firstOrCreate([
+            'user_id' => $userId,
             'event_id' => $request->event_id,
         ]);
 
+        $message = $favorite->wasRecentlyCreated
+            ? 'Favorite created successfully'
+            : 'Favorite already exists';
+
         return response()->json([
-            'message' => 'Favorite created successfully',
+            'message' => $message,
             'favorite' => $favorite
         ], 201);
     }
 
+
     public function show($id)
     {
-        $favorite = Favorite::with(['user', 'event'])->findOrFail($id);
-        return response()->json($favorite);
+        $user = Auth::user();
+        $exists = Favorite::where('user_id', $user->id)
+            ->where('event_id', $id)
+            ->exists();
+
+        return response()->json([
+            'event_id' => $id,
+            'favorite' => $exists
+        ]);
+    }
+    public function remove(Request $request)
+    {
+        $user = Auth::user();
+
+        Favorite::where('user_id', $user->id)
+            ->where('event_id', $request->event_id)
+            ->delete();
+
+        return response()->json([
+            'message' => 'Favorite removed successfully'
+        ]);
     }
 
     public function destroy($id)

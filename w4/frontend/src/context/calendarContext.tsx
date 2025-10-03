@@ -4,8 +4,8 @@ interface CalendarContextType {
   nextMonth: () => void;
   prevMonth: () => void;
   dates: Date[];
-  visibleDate: Date;              // tháng đang hiển thị
-  selectedDate: Date;      // ngày đã chọn
+  visibleDate: Date;           
+  selectedDate: Date;     
   setSelectedDate: (date: Date) => void;
 }
 

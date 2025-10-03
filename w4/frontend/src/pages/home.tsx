@@ -5,6 +5,7 @@ import Calendar from "../component/calendar/calendar";
 import type { Event } from "../model/Event";
 import { formatDateLocal } from "../utils/timeUtil";
 import { useCalendar } from "../context/calendarContext";
+import apiFetch from "../hook/useFetch";
 
 const Home = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -15,9 +16,10 @@ const Home = () => {
     const getData = async () => {
       try {
         setLoading(true)
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/events/day/${formatDateLocal(selectedDate)}`
+        const response = await apiFetch(
+          `events/day/${formatDateLocal(selectedDate)}`
         );
+        console.log(response)
 
         if (response.ok) {
           const data = await response.json();
@@ -56,8 +58,8 @@ const Home = () => {
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <svg
-              width="40" // thay đổi kích thước theo ý muốn
-              height="40" // giữ tỷ lệ vuông
+              width="40" 
+              height="40" 
               fill="hsl(228, 97%, 42%)"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +82,6 @@ const Home = () => {
 <div className="px-20 -mt-5">
   <div className="border-1.5 border-gray-100 shadow-lg bg-white p-5 rounded-md ">
     {loading ? (
-      // trạng thái loading
       <div className="w-full h-full flex items-center justify-center">
         <svg
           width="40"
@@ -101,16 +102,14 @@ const Home = () => {
         </svg>
       </div>
     ) : events.length === 0 ? (
-      // trạng thái không có sự kiện
       <p className="text-center text-gray-500 text-xl py-10">
         Không có sự kiện cho ngày này
       </p>
     ) : (
-      // trạng thái có sự kiện
       <>
-        {event?.day &&
+        {event?.start_day &&
           (() => {
-            const eventDate = new Date(event.day);
+            const eventDate = new Date(event.start_day);
             const today = new Date();
             const isToday =
               eventDate.getDate() === today.getDate() &&

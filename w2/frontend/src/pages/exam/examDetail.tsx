@@ -9,6 +9,7 @@ import type { Result } from "../../model/result";
 import type { Question } from "../../model/question";
 import Modal from "../../component/modal/modal";
 import Loading from "../../component/loading";
+import apiFetch from "../../hook/useFetch";
 
 const ExamDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -66,12 +67,11 @@ const ExamDetail: React.FC = () => {
     async function getresult() {
       if (!token || !id) return;
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/exam/${id}`, {
+        const response = await apiFetch(`exam/${id}`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
-        });
+        },token);
 
         if (response.ok) {
           const data = await response.json();
@@ -119,8 +119,8 @@ const ExamDetail: React.FC = () => {
     if (!token || !id) return;
     setSelectloading(true);
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/exam/${id}/answer`,
+      const response = await apiFetch(
+        `exam/${id}/answer`,
         {
           method: "POST",
           headers: {
@@ -153,13 +153,12 @@ const ExamDetail: React.FC = () => {
 
     try{
 
-      const response =await fetch(`http://127.0.0.1:8000/api/exam/${id}/pass`,{
+      const response =await apiFetch(`exam/${id}/pass`,{
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
           },
-        }
+        },token
       );
 
       if (response.ok) {
@@ -190,15 +189,14 @@ const ExamDetail: React.FC = () => {
     if (!id || !token) return;
 
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/exam/${id}/finish`,
+      const response = await apiFetch(
+        `exam/${id}/finish`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
-        }
+        },token
       );
 
       if (response.ok) {

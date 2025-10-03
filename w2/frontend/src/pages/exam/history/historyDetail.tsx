@@ -5,6 +5,7 @@ import { useAuth } from "../../../hook/userContext";
 import Answer from "../../../component/ans";
 import type { Result } from "../../../model/result";
 import Loading from "../../../component/loading";
+import apiFetch from "../../../hook/useFetch";
 
 const HistoryDetail = () => {
   const navigate = useNavigate();
@@ -21,15 +22,14 @@ const HistoryDetail = () => {
       }
 
       try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/results/${id}`,
+        const response = await apiFetch(
+          `results/${id}`,
           {
             headers: {
               "Content-Type": "application/json",
               Accept: "application/json",
-              Authorization: `Bearer ${token}`,
             },
-          }
+          },token
         );
 
         if (response.ok) {

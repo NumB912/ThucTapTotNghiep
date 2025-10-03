@@ -38,11 +38,6 @@ const ChangePassword = () => {
     setModalVisible(true);
   };
 
-  // const handleConfirmPassword = () => {
-  //   setNewPassword(generatedPassword);
-  //   setConfirmPassword(generatedPassword);
-  //   setModalVisible(false);
-  // };
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();

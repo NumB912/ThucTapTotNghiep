@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 import type { Topic } from "../../model/topic";
 import ButtonBack from "../../component/buttonBack";
 import Loading from "../../component/loading";
+import apiFetch from "../../hook/useFetch";
 
 const Practice = () => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ const Practice = () => {
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     async function getData() {
-      const response = await fetch("http://127.0.0.1:8000/api/topics");
+      const response = await apiFetch("topics");
       try {
         if (response.ok) {
           const data = await response.json();

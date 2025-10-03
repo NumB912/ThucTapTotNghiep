@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Favorite extends Model
 {
     use HasFactory;
-
+    protected $table = 'favorite';
     public $incrementing = false;
 
     protected $primaryKey = 'id';
@@ -28,6 +28,6 @@ class Favorite extends Model
 
     public function event()
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Event::class,'event_id');
     }
 }

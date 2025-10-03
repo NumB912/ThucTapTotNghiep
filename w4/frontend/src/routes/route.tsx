@@ -8,6 +8,8 @@ import EventDetail from "../pages/eventDetail";
 import Profile from "../pages/auth/profile";
 import EditProfile from "../pages/auth/editProfile";
 import ChangePassword from "../pages/auth/changePassword";
+import Favorites from "../pages/auth/favorite";
+import Map from "../pages/mapping";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -38,6 +40,10 @@ const router = createBrowserRouter([
         path: "/changePassword",
         element: <ChangePassword />,
       },
+      {
+      path:"/favorites",
+      element:<Favorites/>
+    },
     ],
   },
   {
@@ -47,7 +53,10 @@ const router = createBrowserRouter([
   {
     path: "signup",
     element: <SignUp />,
-  },
+  },{
+    path:"/event/:id/map",
+    element:<Map/>
+  }
 ]);
 
 export default router;

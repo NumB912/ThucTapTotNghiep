@@ -6,7 +6,7 @@ import ModalLogin from "../component/modalLogin";
 const Root = () => {
   const navigate = useNavigate();
   const { token, setToken, setUser, logout, user } = useAuth();
-
+  console.log(token)
   const handleLogout = async () => {
     try {
       const ok = await logout(token);

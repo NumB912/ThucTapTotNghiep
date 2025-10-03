@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
+import apiFetch from '../../hook/useFetch';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const SignUp = () => {
     setError('');
     console.log(username)
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/signup', {
+      const res = await apiFetch('signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

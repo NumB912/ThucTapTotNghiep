@@ -94,13 +94,13 @@ class ResultController extends Controller
                 DB::raw('SUM(ispass::int) as total_pass')
             )
             ->groupBy('userid')
-            ->orderByDesc('total_result')
+            ->orderByDesc('total_pass')
             ->paginate(3);
         $offset = ($result->currentPage() - 1) * $result->perPage();
         $result->getCollection()->transform(function ($item, $index) use ($offset) {
             $item->rank = $offset + $index + 1;
             return $item;
-        });
+        }); 
 
         return response()->json($result);
     }

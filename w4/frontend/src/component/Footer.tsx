@@ -1,10 +1,8 @@
 export default function Footer() {
   return (
-    <footer className="bg-purple-500 text-white mt-10">
+    <footer className="bg-purple-500 text-white">
       <div className="max-w-7xl mx-auto px-6 py-10">
-        {/* Grid chia 3 cột */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Logo + Mô tả */}
           <div>
             <h2 className="text-2xl font-bold">MyBrand</h2>
             <p className="mt-3 text-sm">
@@ -12,7 +10,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Liên kết nhanh */}
           <div>
             <h3 className="text-lg font-semibold mb-3">Liên kết</h3>
             <ul className="space-y-2">
@@ -23,7 +20,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Mạng xã hội */}
           <div>
             <h3 className="text-lg font-semibold mb-3">Kết nối</h3>
             <div className="flex space-x-4">
@@ -33,8 +29,6 @@ export default function Footer() {
             </div>
           </div>
         </div>
-
-        {/* Divider */}
         <div className="border-t border-gray-300 mt-8 pt-6 text-center text-sm text-gray-600">
           © 2025 MyBrand. All rights reserved.
         </div>

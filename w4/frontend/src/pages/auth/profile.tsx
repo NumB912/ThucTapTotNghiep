@@ -1,7 +1,7 @@
 import React from "react";
 import { useAuth } from "../../context/userContext";
 import { useNavigate } from "react-router";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaChair, FaHeart, FaPen } from "react-icons/fa";
 
 const Profile = () => {
   const { user, token } = useAuth();
@@ -58,15 +58,22 @@ const Profile = () => {
       <div className="w-full flex justify-end gap-3">
         <button
           onClick={() => navigate("/changePassword")}
-          className="bg-purple-500 text-white p-2 rounded hover:bg-purple-500/80 cursor-pointer"
+          className="bg-purple-500 text-white p-2 rounded hover:bg-purple-500/80 cursor-pointer flex items-center gap-2"
         >
-          Đổi mật khẩu
+          <FaChair/> <span>Đổi mật khẩu</span>
         </button>
         <button
           onClick={() => navigate("/editProfile")}
-          className="bg-purple-500 text-white p-2 rounded hover:bg-purple-500/80 cursor-pointer"
+          className="bg-purple-500 text-white p-2 rounded hover:bg-purple-500/80 cursor-pointer flex items-center gap-2"
         >
-          Chỉnh sửa
+         <FaPen/> <span>Chỉnh sửa</span>
+        </button>
+
+          <button
+          onClick={() => navigate("/Favorites")}
+          className="bg-purple-500 text-white p-2 rounded hover:bg-purple-500/80 cursor-pointer flex items-center gap-2"
+        >
+          <FaHeart className="inline"/> <span> Yêu thích</span>
         </button>
       </div>
     </div>

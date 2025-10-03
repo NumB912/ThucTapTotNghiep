@@ -3,6 +3,7 @@ import { useAuth } from "../../hook/userContext";
 import { useNavigate } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
 import ModalLoading from "../../component/modalLoading";
+import apiFetch from "../../hook/useFetch";
 
 const EditProfile: React.FC = () => {
   const { user, updateUser, token } = useAuth();
@@ -12,7 +13,7 @@ const EditProfile: React.FC = () => {
   const [email, setEmail] = useState(user?.email || "");
   const [avatar, setAvatar] = useState<File | null>(null);
   const [avatarUrl, setAvatarUrl] = useState(user?.img || "");
-  const [loading,setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewUrl = avatar ? URL.createObjectURL(avatar) : avatarUrl || "";
 
@@ -23,12 +24,15 @@ const EditProfile: React.FC = () => {
     formData.append("img", avatar);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/user/avatar", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      setLoading(true)
+      const res = await apiFetch(
+        "user/avatar",
+        {
+          method: "POST",
+          body: formData,
+        },
+        token
+      );
+      setLoading(true);
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.message || "Upload avatar thất bại");
@@ -38,14 +42,14 @@ const EditProfile: React.FC = () => {
       console.error(err);
       alert("Có lỗi khi upload avatar: " + err);
       return null;
-    }finally{
-           setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSave = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const uploadedAvatarUrl = await handleAvatarUpload();
       await updateUser(
         {
@@ -61,8 +65,8 @@ const EditProfile: React.FC = () => {
     } catch (err) {
       console.error(err);
       alert("Có lỗi khi cập nhật");
-    }finally{
- setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -135,7 +139,12 @@ const EditProfile: React.FC = () => {
         </button>
       </div>
 
-      <ModalLoading isOpen={loading} setIsOpen={()=>{setLoading(false)}}/>
+      <ModalLoading
+        isOpen={loading}
+        setIsOpen={() => {
+          setLoading(false);
+        }}
+      />
     </div>
   );
 };

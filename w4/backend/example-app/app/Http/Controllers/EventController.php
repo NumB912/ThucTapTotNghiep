@@ -10,32 +10,38 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::get();
-        if (!$events) {
-            return response()->json(["message", "Không tìm thấy dữ liệu vui lòng thử lại"], 404);
+        $events = Event::with(['image', 'region','details','details.images'])->get();
+
+        if ($events->isEmpty()) {
+            return response()->json([
+                "message" => "Không tìm thấy dữ liệu vui lòng thử lại"
+            ], 404);
         }
+
         return response()->json([
             "events" => $events
         ], 200);
     }
 
+
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'nullable|string',
-            'day' => 'required|date',
-            'region' => 'nullable|string',
-            'img' => 'nullable|string',
-            'to_day' => 'nullable|date',
-        ]);
+          $data = $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'nullable|string',
+        'start_day' => 'required|date',
+        'end_day' => 'nullable|date',
+        'region_id' => 'nullable|integer',   
+        'parent_id' => 'nullable|integer',   
+        'img_id' => 'nullable|integer',      
+    ]);
 
         return Event::create($data);
     }
 
     public function show($id)
     {
-        return Event::with('details')->findOrFail($id);
+        return Event::with(['details','image'])->findOrFail($id);
     }
 
     public function update(Request $request, $id)
@@ -49,9 +55,9 @@ class EventController extends Controller
     {
         $carbon = Carbon::parse($date);
 
-        $events = Event::whereDay('day', $carbon->day)
-               ->whereMonth('day', $carbon->month)
-               ->get();
+        $events = Event::with('image')->whereDay('start_day', $carbon->day)
+            ->whereMonth('start_day', $carbon->month)
+            ->get();
 
         if ($events->isEmpty()) {
             return response()->json([
@@ -68,8 +74,8 @@ class EventController extends Controller
     {
         $carbon = Carbon::parse($date);
 
-        $events = Event::whereMonth('day', $carbon->month)
-               ->get();
+        $events = Event::whereMonth('start_day', $carbon->month)
+            ->get();
 
         if ($events->isEmpty()) {
             return response()->json([

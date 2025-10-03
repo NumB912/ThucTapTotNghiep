@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
 import ModalLoading from "../../component/modal/modalLoading";
 import ModalMessage from "../../component/modal/modalMessage";
+import apiFetch from "../../hook/useFetch";
 
 const EditProfile: React.FC = () => {
   const { user, updateUser, token } = useAuth();
@@ -27,11 +28,10 @@ const EditProfile: React.FC = () => {
     formData.append("img", avatar);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/user/avatar", {
+      const res = await apiFetch("user/avatar", {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
         body: formData,
-      });
+      },token);
       setLoading(true);
       const data = await res.json();
 

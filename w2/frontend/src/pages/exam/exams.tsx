@@ -5,6 +5,7 @@ import ExamCard from "../../component/examCard";
 import { useAuth } from "../../hook/userContext";
 import type { Result } from "../../model/result";
 import Loading from "../../component/loading";
+import apiFetch from "../../hook/useFetch";
 
 
 const Exams: React.FC = () => {
@@ -21,13 +22,13 @@ const Exams: React.FC = () => {
         return;
       }
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/results", {
+        const response = await apiFetch("results", {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-            Authorization: `Bearer ${token}`,
+           
           },
-        });
+        },token);
 
         if (!response.ok) {
           const err = await response.json();

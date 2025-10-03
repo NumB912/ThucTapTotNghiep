@@ -26,12 +26,18 @@ class AuthController extends Controller
             return response()->json(['message' => 'Sai mật khẩu'], 401);
         }
 
-        $token = $user->createToken('api-token')->plainTextToken;
-
+        $tokenResult = $user->createToken(
+            'api-token',          
+            ['*'],             
+            now()->addDays(2)  
+        );
+        $tokenToClient = $tokenResult->plainTextToken;
+        $expires_at = $tokenResult->accessToken->expires_at;
         return response()->json([
             'message' => 'Đăng nhập thành công',
             'user'    => $user,
-            'token'   => $token,
+            'token'   => $tokenToClient,
+            'expires_at'=>$expires_at,
         ]);
     }
 

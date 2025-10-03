@@ -3,6 +3,7 @@ import RankCard from "../../component/rankCard";
 import type { User } from "../../model/user";
 import ButtonBack from "../../component/buttonBack";
 import Loading from "../../component/loading";
+import apiFetch from "../../hook/useFetch";
 
 interface Rank {
   rank: number;
@@ -22,8 +23,8 @@ const Ranks = () => {
   useEffect(() => {
     async function getRank() {
       try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/rank?page=${page}`
+        const response = await apiFetch(
+          `rank?page=${page}`
         );
 
         if (response.ok) {

@@ -6,6 +6,7 @@ import { useAuth } from "../../../hook/userContext";
 import type { Result } from "../../../model/result";
 import ButtonBack from "../../../component/buttonBack";
 import Loading from "../../../component/loading";
+import apiFetch from "../../../hook/useFetch";
 
 const Histories = () => {
   const navigate = useNavigate();
@@ -24,13 +25,13 @@ const Histories = () => {
         return;
       }
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/results", {
+        const response = await apiFetch("results", {
+          method:"GET",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+          }
+        },token);
 
         if (!response.ok) {
           const err = await response.json();
@@ -52,7 +53,7 @@ const Histories = () => {
 useEffect(() => {
   if (results.length > 0) {
     const passCount = results.filter((res) => res.ispass).length;
-    setPercentage((passCount / results.length) * 100);
+   setPercentage(Number((passCount / results.length).toFixed(2)) * 100);
     Setquantity_exam(results.length);
     setExamPass(passCount)
   } else {

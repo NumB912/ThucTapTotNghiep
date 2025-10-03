@@ -20,7 +20,7 @@ const RankCard = ({user,percentPass,rank,total,url}:RankCardProp) => {
         </div>
         <p className="text-lg text-center">{user?.name}</p>
         <p className="text-lg text-center">{total}</p>
-        <p className="text-lg text-center">{percentPass}</p>
+        <p className="text-lg text-center">{Number(percentPass.toFixed(2))*100}%</p>
       </div>
     </div>
   );

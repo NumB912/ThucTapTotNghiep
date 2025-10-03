@@ -60,7 +60,7 @@ const Calendar = ({ handleClick=()=>{}}: CalendarProp) => {
 
   const eventDays = new Set(
     events.map((e) => {
-      const d = new Date(e.day);
+      const d = new Date(e.start_day);
       return `${d.getMonth() + 1}-${d.getDate()}`;
     })
   );
@@ -100,7 +100,7 @@ const Calendar = ({ handleClick=()=>{}}: CalendarProp) => {
           ))}
 
           {loading ? (
-            // 👇 loading state
+
             <div className="col-span-7 text-center text-gray-500 py-10">
               Đang tải sự kiện...
             </div>

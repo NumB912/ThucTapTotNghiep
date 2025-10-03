@@ -2,24 +2,29 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class EventImage extends Model
 {
-    use HasFactory;
-
     protected $table = 'event_image';
     protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'int';
     public $timestamps = false;
 
     protected $fillable = [
-        'img',
-        'event_detail_id'
+        'id',
+        'event_detail_id',
+        'image_id',
     ];
 
-    public function detail()
+    public function eventDetail()
     {
-        return $this->belongsTo(EventDetail::class, 'event_detail_id', 'id');
+        return $this->belongsTo(EventDetail::class, 'event_detail_id');
+    }
+
+    public function image()
+    {
+        return $this->belongsTo(Image::class, 'image_id');
     }
 }

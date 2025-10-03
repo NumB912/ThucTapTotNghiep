@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+
 class AuthController extends Controller
 {
     public function login(Request $request)
@@ -25,14 +27,20 @@ class AuthController extends Controller
             return response()->json(['message' => 'Sai mật khẩu'], 401);
         }
 
-        
 
-        $token = $user->createToken('api-token')->plainTextToken;
 
+        $tokenResult = $user->createToken(
+            'api-token',           // tên token
+            ['*'],                 // abilities
+            now()->addMinutes(2)     // thời gian hết hạn
+        );
+        $tokenToClient = $tokenResult->plainTextToken;
+        $expires_at = $tokenResult->accessToken->expires_at;
         return response()->json([
             'message' => 'Đăng nhập thành công',
             'user'    => $user,
-            'token'   => $token,
+            'token'   => $tokenToClient,
+            'expires_at'=>$expires_at,
         ]);
     }
 
@@ -46,17 +54,17 @@ class AuthController extends Controller
         ]);
 
         // try {
-            $user = User::create([
-                'username' => $validated['username'],
-                'password' => Hash::make($validated['password']),
-                'name'     => $validated['name'],
-                'email'    => $validated['email'],
-            ]);
+        $user = User::create([
+            'username' => $validated['username'],
+            'password' => Hash::make($validated['password']),
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+        ]);
 
-            return response()->json([
-                'message' => 'Đăng ký thành công',
-                'user'    => $user,
-            ], 201);
+        return response()->json([
+            'message' => 'Đăng ký thành công',
+            'user'    => $user,
+        ], 201);
         // // } catch (\Exception $e) {
         //     return response()->json([
         //         'message' => 'Đăng ký thất bại',

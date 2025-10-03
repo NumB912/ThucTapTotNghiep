@@ -1,39 +1,36 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
-import { useAuth } from '../../hook/userContext';
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
+import apiFetch from "../../hook/useFetch";
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [username,setUserName] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [username, setUserName] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    console.log(username)
+    setError("");
+    console.log(username);
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        body: JSON.stringify({ username,name, email, password })
-      });
+      const res = await apiFetch("register", {
+    method: "POST",
+    body: JSON.stringify({ username, name, email, password }),
+    headers: { "Content-Type": "application/json" },
+  });
 
       if (!res.ok) {
         const errData = await res.json();
-        setError(errData.message || 'Đăng ký thất bại');
+        setError(errData.message || "Đăng ký thất bại");
         return;
       }
-      console.log(password)
-      navigate('/');
+      console.log(password);
+      navigate("/");
     } catch (err) {
       console.error(err);
-      setError('Có lỗi xảy ra');
+      setError("Có lỗi xảy ra");
     }
   };
 
@@ -46,8 +43,10 @@ const SignUp = () => {
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           {error && <p className="text-red-500 text-sm">{error}</p>}
-                    <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Username
+            </label>
             <input
               type="text"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
@@ -58,7 +57,9 @@ const SignUp = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Name
+            </label>
             <input
               type="text"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
@@ -69,7 +70,9 @@ const SignUp = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
             <input
               type="email"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
@@ -80,7 +83,9 @@ const SignUp = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
             <input
               type="password"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
@@ -102,7 +107,7 @@ const SignUp = () => {
           Already have an account?
           <button
             className="text-indigo-600 hover:text-indigo-500 font-medium ml-1"
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
           >
             Sign In
           </button>
@@ -112,4 +117,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp
+export default SignUp;

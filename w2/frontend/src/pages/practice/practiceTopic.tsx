@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import { FaArrowLeft } from "react-icons/fa";
 import type { Question } from "../../model/question";
 import CardTopicPractice from "../../component/cardTopicPractice";
+import apiFetch from "../../hook/useFetch";
 
 const PracticeTopic = () => {
   const navigate = useNavigate();
@@ -14,8 +15,8 @@ const PracticeTopic = () => {
   useEffect(() => {
     async function getData() {
       try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/topic/${id}/question`
+        const response = await apiFetch(
+          `topic/${id}/question`
         );
         if (response.ok) {
           const data = await response.json();
