@@ -22,7 +22,7 @@ const CardEvent = ({event}:CardEventProp) => {
           alt="Card Image"
         />
           <div className="absolute top-2 right-2 rounded-full flex gap-2">
-            <ToggleMap eventId={event.id} className="rounded-full aspect-square w-fit"/>
+            {event.region?<ToggleMap eventId={event.id} className="rounded-full aspect-square w-fit"/>:""}
           <ToggleFavorite event_id={event.id} className="rounded-full aspect-square w-fit"/>
           </div>
       </div>
@@ -36,7 +36,7 @@ const CardEvent = ({event}:CardEventProp) => {
           {event.content}
         </p>
         <button onClick={()=>{navigate(`/event/${event.id}`)}} className="bg-purple-500 text-white text-md p-3 font-bold w-fit hover:scale-105 duration-300">
-          view more
+          Xem thêm
         </button>
       </div>
     </div>

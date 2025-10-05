@@ -3,12 +3,13 @@ import type { User } from "../model/user";
 import { AuthContext } from "./userContext";
 import apiFetch from "../hook/useFetch";
 
+
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [token, setToken] = useState(() => localStorage.getItem("token") || "");
+  const [token, setToken] = useState<string>(() => localStorage.getItem("token") || "");
   const [isLoginModalOpen, setIsModalLogin] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(() => {
     const stored = localStorage.getItem("user");
@@ -62,8 +63,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [token]);
 
   useEffect(() => {
-    console.log(token);
-    console.log(localStorage.getItem('expireAt'))
+    console.log(token)
     if (token) {
       localStorage.setItem("token", token);
     }
@@ -86,11 +86,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (!res.ok) return false;
       const data = await res.json();
       if (data.expires_at) {
-        console.log(new Date(data.expires_at));
         const expireAt = new Date(data.expires_at).getTime();
         localStorage.setItem("expiresAt", expireAt.toString());
       }
-
+      console.log(data.token)
       setToken(data.token);
       setUser(data.user);
       return true;
@@ -163,7 +162,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     try {
       const res = await apiFetch(
-        "changepassword",
+        "user/changepassword",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -202,7 +201,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   function closeLoginModal() {
-    setIsModalLogin(false);
+    setIsModalLogin(false)
   }
 
   return (

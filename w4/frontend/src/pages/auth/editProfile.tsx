@@ -5,6 +5,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import ModalLoading from "../../component/modal/modalLoading";
 import ModalMessage from "../../component/modal/modalMessage";
 import apiFetch from "../../hook/useFetch";
+import ModalLogin from "../../component/modalLogin";
 
 const EditProfile: React.FC = () => {
   const { user, updateUser, token } = useAuth();
@@ -155,6 +156,8 @@ const EditProfile: React.FC = () => {
           setLoading(false);
         }}
       />
+
+            <ModalLogin />
     </div>
   );
 };

@@ -13,14 +13,13 @@ const Navbar = () => {
         setToken("");
         setUser(null);
         navigate("/");
-      } else {
-        
       }
     } catch (error) {
       console.error("Lỗi khi logout:", error);
       alert("Có lỗi xảy ra khi logout");
     }
   };
+
   return (
     <div className="bg-white w-full p-4 flex justify-between items-center shadow-md">
       <div className="text-2xl font-bold text-purple-600">MyLogo</div>

@@ -3,7 +3,7 @@ export interface Region{
     region:Point[],
     x:number;
     y:number;
-    region_name:number;
+    region_name:string;
     parent?:Region;
 }
 

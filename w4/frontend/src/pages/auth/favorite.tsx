@@ -5,6 +5,7 @@ import apiFetch from "../../hook/useFetch";
 import type { Event } from "../../model/Event";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router";
+import ModalLogin from "../../component/modalLogin";
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState<Event[]>();
@@ -60,6 +61,8 @@ const Favorites = () => {
         })}
       </div>
       </div>
+
+            <ModalLogin />
     </div>
   );
 };

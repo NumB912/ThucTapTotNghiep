@@ -5,6 +5,7 @@ import PasswordModalAdvance from "../../component/modal/modalPassword";
 import { FaArrowLeft } from "react-icons/fa";
 import ModalLoading from "../../component/modal/modalLoading";
 import ModalMessage from "../../component/modal/modalMessage";
+import ModalLogin from "../../component/modalLogin";
 
 const ChangePassword = () => {
   const { changePassword, token } = useAuth();
@@ -154,6 +155,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           setModalVisible(false);
         }}
       />
+            <ModalLogin />
     </div>
   );
 };

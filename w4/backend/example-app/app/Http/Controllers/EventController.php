@@ -41,7 +41,7 @@ class EventController extends Controller
 
     public function show($id)
     {
-        return Event::with(['details','image'])->findOrFail($id);
+        return Event::with(['details','image','region'])->findOrFail($id);
     }
 
     public function update(Request $request, $id)
@@ -53,9 +53,15 @@ class EventController extends Controller
 
     public function getEventWithDays($date)
     {
+        if(!$date){
+            return response()->json([
+                "message" => "Không có dữ liệu ngày!!!"
+            ], 400);
+        }
+
         $carbon = Carbon::parse($date);
 
-        $events = Event::with('image')->whereDay('start_day', $carbon->day)
+        $events = Event::with('image','region')->whereDay('start_day', $carbon->day)
             ->whereMonth('start_day', $carbon->month)
             ->get();
 

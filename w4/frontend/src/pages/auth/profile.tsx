@@ -2,13 +2,15 @@ import React from "react";
 import { useAuth } from "../../context/userContext";
 import { useNavigate } from "react-router";
 import { FaArrowLeft, FaChair, FaHeart, FaPen } from "react-icons/fa";
+import ModalLogin from "../../component/modalLogin";
 
 const Profile = () => {
-  const { user, token } = useAuth();
+  const { user, requireLogin,isLoginModalOpen } = useAuth();
   const navigate = useNavigate();
 
-  if (!token || !user) {
-    return <div className="text-center mt-10">Bạn chưa đăng nhập</div>;
+  if(requireLogin()){ 
+    console.log(isLoginModalOpen)
+    return  <ModalLogin />
   }
 
   return (
@@ -76,6 +78,8 @@ const Profile = () => {
           <FaHeart className="inline"/> <span> Yêu thích</span>
         </button>
       </div>
+
+
     </div>
   );
 };

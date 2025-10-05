@@ -10,13 +10,14 @@ import EditProfile from "../pages/auth/editProfile";
 import ChangePassword from "../pages/auth/changePassword";
 import Favorites from "../pages/auth/favorite";
 import Map from "../pages/mapping";
+import PrivateRoute from "../component/privateRoute";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
 
     children: [
-            {
+      {
         index: true,
         element: <Home />,
       },
@@ -29,21 +30,26 @@ const router = createBrowserRouter([
         element: <EventDetail />,
       },
       {
-        path: "/profile",
-        element: <Profile />,
+        element: <PrivateRoute />,
+        children: [
+          {
+            path: "/profile",
+            element: <Profile />,
+          },
+          {
+            path: "/editProfile",
+            element: <EditProfile />,
+          },
+          {
+            path: "/changePassword",
+            element: <ChangePassword />,
+          },
+          {
+            path: "/favorites",
+            element: <Favorites />,
+          },
+        ],
       },
-      {
-        path: "/editProfile",
-        element: <EditProfile />,
-      },
-      {
-        path: "/changePassword",
-        element: <ChangePassword />,
-      },
-      {
-      path:"/favorites",
-      element:<Favorites/>
-    },
     ],
   },
   {
@@ -53,10 +59,11 @@ const router = createBrowserRouter([
   {
     path: "signup",
     element: <SignUp />,
-  },{
-    path:"/event/:id/map",
-    element:<Map/>
-  }
+  },
+  {
+    path: "/event/:id/map",
+    element: <Map />,
+  },
 ]);
 
 export default router;
