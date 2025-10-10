@@ -10,7 +10,7 @@ const PrivateRoute = () => {
     if (!token) {
       requireLogin();
     }
-  }, [token, requireLogin]);
+  }, [token]);
 
   if (!token) {
     return <ModalLogin/>;

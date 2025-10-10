@@ -21,8 +21,12 @@ const Mapping = () => {
   const [selectedMarker, setSelectedMarker] = useState<Event>();
   const [dataEvent, setDataEvent] = useState<Event>();
   const [modalEvent, setModalEvent] = useState<Event | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedMonth, setSelectedMonth] = useState<number>(
+    new Date().getMonth() + 1
+  );
+  const [selectedDay, setSelectedDay] = useState<number>(new Date().getDate());
 
-  // 🗺️ Load geojson (cấp tỉnh, huyện)
   useEffect(() => {
     const loadGeo = async () => {
       try {
@@ -47,6 +51,8 @@ const Mapping = () => {
         if (response.ok) {
           const data = await response.json();
           setDataEvent(data);
+          console.log(data.start_day);
+          setSelectedDate(data.start_day);
           setSelectedMarker(data);
         }
       } catch (err) {
@@ -56,25 +62,23 @@ const Mapping = () => {
     getData();
   }, [id]);
 
-  // 🗓️ Lấy các event cùng ngày, chỉ giữ event có tọa độ hợp lệ
   useEffect(() => {
-    if (!dataEvent?.start_day) return;
+    if (!selectedDate) return;
 
     const getSameDay = async () => {
+              console.log(selectedDate)
       try {
-        const response = await apiFetch(`events/day/${dataEvent.start_day}`);
+        const response = await apiFetch(`events/day/${selectedDate}`);
         if (response.ok) {
           const data = await response.json();
-
-          // ✅ Lọc bỏ event không có tọa độ hợp lệ
           const filteredEvents = (data.events || []).filter(
             (m: Event) =>
-              m.region?.x !== null &&
-              m.region?.y !== null &&
-              m.region?.x !== undefined &&
-              m.region?.y !== undefined &&
-              !isNaN(Number(m.region.x)) &&
-              !isNaN(Number(m.region.y))
+              m.location?.x !== null &&
+              m.location?.y !== null &&
+              m.location?.x !== undefined &&
+              m.location?.y !== undefined &&
+              !isNaN(Number(m.location.x)) &&
+              !isNaN(Number(m.location.y))
           );
 
           setMarkers(filteredEvents);
@@ -84,11 +88,49 @@ const Mapping = () => {
       }
     };
     getSameDay();
-  }, [dataEvent]);
+  }, [selectedDate]);
+
+  async function handleChooseDate() {
+    if (!selectedDay && !selectedMonth) {
+      return;
+    }
+
+    if (!selectedDay && !selectedMonth) return;
+
+    const date = new Date();
+    date.setMonth(selectedMonth - 1);
+    date.setDate(selectedDay);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    const formatted = `${year}-${month}-${day}`;
+    console.log(formatted);
+    try {
+      const response = await apiFetch(`events/day/${formatted}`);
+      if (response.ok) {
+        const data = await response.json();
+        const filteredEvents = (data.events || []).filter(
+          (m: Event) =>
+            m.location?.x !== null &&
+            m.location?.y !== null &&
+            m.location?.x !== undefined &&
+            m.location?.y !== undefined &&
+            !isNaN(Number(m.location.x)) &&
+            !isNaN(Number(m.location.y))
+        );
+
+        setMarkers(filteredEvents);
+        console.log(filteredEvents);
+      }
+    } catch (err) {
+      console.error("Fetch same-day events error:", err);
+    }
+  }
 
   return (
     <div className="w-full h-screen relative flex">
-      {/* 📋 Sidebar */}
       <div className="w-1/4 h-full bg-gray-100 flex flex-col">
         <div className="p-4 border-b border-gray-300 flex items-center gap-2">
           <button
@@ -116,13 +158,11 @@ const Mapping = () => {
         </div>
       </div>
 
-      {/* 🗺️ Map hiển thị các marker */}
       <Map
         initialViewState={initialViewState}
         mapStyle="https://api.maptiler.com/maps/basic-v2/style.json?key=EOvTbuM45yaT8gXWQdXm"
         style={{ width: "100%", height: "100%" }}
       >
-        {/* 🧭 Cấp tỉnh */}
         {geoLevel1 && (
           <Source id="level1" type="geojson" data={geoLevel1}>
             <Layer
@@ -137,25 +177,19 @@ const Mapping = () => {
           </Source>
         )}
 
-        {/* 🏙️ Cấp huyện */}
         {geoLevel2 && <Source id="level2" type="geojson" data={geoLevel2} />}
 
-        {/* 📍 Marker được chọn */}
         {selectedMarker &&
-          selectedMarker.region?.x &&
-          selectedMarker.region?.y && (
+          selectedMarker.location?.x &&
+          selectedMarker.location?.y && (
             <Marker
-              longitude={Number(selectedMarker.region.x)}
-              latitude={Number(selectedMarker.region.y)}
+              longitude={Number(selectedMarker.location.x)}
+              latitude={Number(selectedMarker.location.y)}
               anchor="bottom"
               style={{ marginBottom: 19 }}
             >
-              <div
-                className="max-w-50 flex flex-col bg-white p-2 rounded shadow-md pointer-events-none"
-              >
-                <strong className="line-clamp-2">
-                  {selectedMarker.title}
-                </strong>
+              <div className="max-w-50 flex flex-col bg-white p-2 rounded shadow-md pointer-events-none">
+                <strong className="line-clamp-2">{selectedMarker.title}</strong>
                 <p className="line-clamp-2">{selectedMarker.content}</p>
                 {selectedMarker.image?.url && (
                   <img
@@ -167,13 +201,11 @@ const Mapping = () => {
               </div>
             </Marker>
           )}
-
-        {/* 📌 Marker danh sách */}
         {markers.map((m) => (
           <Marker
             key={m.id}
-            longitude={Number(m.region.x)}
-            latitude={Number(m.region.y)}
+            longitude={Number(m.location?.x || 21.0285)}
+            latitude={Number(m.location?.y || 105.8542)}
             anchor="top"
           >
             <svg
@@ -196,6 +228,39 @@ const Mapping = () => {
             </svg>
           </Marker>
         ))}
+
+        <div className="absolute right-10 p-3 flex gap-2">
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+            className="p-2 border rounded w-1/2 bg-white"
+          >
+            {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+              <option key={month} value={month}>
+                Tháng {month}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={selectedDay}
+            onChange={(e) => setSelectedDay(Number(e.target.value))}
+            className="p-2 border rounded w-1/2 bg-white"
+          >
+            {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+              <option key={day} value={day}>
+                Ngày {day}
+              </option>
+            ))}
+          </select>
+
+          <button
+            onClick={handleChooseDate}
+            className="bg-purple-500 p-3 rounded-md text-white"
+          >
+            Tìm
+          </button>
+        </div>
       </Map>
 
       {/* 🪟 Modal chi tiết sự kiện */}

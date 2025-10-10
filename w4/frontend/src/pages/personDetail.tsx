@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from "react";
 import Calendar from "../component/calendar/calendar";
-import CardEventChild from "../component/CardEventChild";
-import CardEventDetail from "../component/CardEventDetail";
 import { useNavigate, useParams } from "react-router";
-import type { Event } from "../model/Event";
 import apiFetch from "../hook/useFetch";
+import type { Person } from "../model/Person";
+import CardPersonChild from "../component/CardPersonChild";
+import CardPersonDetail from "../component/CardPersonDetail";
 
-const EventDetail = () => {
+const PersonDetail = () => {
   const { id } = useParams();
-  const [event, setEvent] = useState<Event>();
-  const [eventsSameDay, setEventsSameDay] = useState<Event[]>([]);
+  const [person, setPerson] = useState<Person>();
+  const [peopleSameDay, setPeopleSameDay] = useState<Person[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   useEffect(() => {
     if (!id) return;
-    const getEventDetail = async () => {
+    const getPersonDetail = async () => {
       try {
-        const response = await apiFetch(`events/${id}`);
+        const response = await apiFetch(`person/${id}`);
         if (response.ok) {
           const data = await response.json();
           console.log(data);
-          setEvent(data);
+          setPerson(data.person);
         }
       } catch (e) {
         console.error(e);
@@ -29,26 +29,26 @@ const EventDetail = () => {
       }
     };
 
-    getEventDetail();
+    getPersonDetail();
   }, [id]);
 
-  useEffect(() => {
-    if (!event) return;
+  // useEffect(() => {
+  //   if (!event) return;
 
-    const getEventsSameDay = async () => {
-      try {
-        const response = await apiFetch(`events/day/${event.start_day}`);
-        if (response.ok) {
-          const data = await response.json();
-          setEventsSameDay(data.events.filter((e: Event) => e.id !== event.id));
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    };
+  //   const getPeopleSameDay = async () => {
+  //     try {
+  //       const response = await apiFetch(`people/day/${person}`);
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         setPeopleSameDay(data.events.filter((e: Event) => e.id !== event.id));
+  //       }
+  //     } catch (e) {
+  //       console.error(e);
+  //     }
+  //   };
 
-    getEventsSameDay();
-  }, [event]);
+  //   getPeopleSameDay();
+  // }, [event]);
   return (
     <div className="w-full">
       <div className="grid grid-cols-[1fr_350px] gap-8 w-full bg-gradient-to-t from-purple-400 to-pink-200 p-20">
@@ -73,28 +73,51 @@ const EventDetail = () => {
             </svg>
           </div>
         ) : (
-          <div className="">
-            {event ? <CardEventDetail event={event} /> : ""}
-            <div className="mt-8">
+          <div className="flex gap-5">
+            {person ? <CardPersonDetail person={person} /> : ""}
+            <div className="">
               <div className="border-1.5 border-gray-100 shadow-lg bg-white p-5 rounded-md ">
-                {event?.content ? (
+                {person?.content ? (
                   <div>
                     <p className="text-2xl font-bold my-3 text-gray-700">
                       Tổng quan
                     </p>
-                    <p className="leading-8">{event.content}</p>
+                    <p className="leading-8">{person.content}</p>
+
+                    <p className="text-2xl font-bold my-3 text-gray-700">
+                      Thông tin chi tiết
+                    </p>
+
+                    <div className="grid grid-cols-2">
+                      <p className="font-bold text-gray-700">Tên:</p> <p>{person.name}</p>
+                      {person.DOB && (
+                        <>
+                          {" "}
+                          <p className="font-bold text-gray-700">Năm sinh:</p>{" "}
+                          <p>{new Date(person.DOB).toLocaleDateString()}</p>
+                        </>
+                      )}
+
+                        {person.DOD && (
+                        <>
+                          {" "}
+                          <p className="font-bold text-gray-700">Năm mất:</p>{" "}
+                          <p>{new Date(person.DOD).toLocaleDateString()}</p>
+                        </>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   ""
                 )}
-                {event?.details?.map((detail) => (
+                {/* {event?.details?.map((detail) => (
                   <div>
                     <p className="text-2xl font-bold my-3 text-gray-700">
                       {detail.type}
                     </p>
                     <p className="leading-8">{detail.content}</p>
                   </div>
-                ))}
+                ))} */}
               </div>
             </div>
           </div>
@@ -113,12 +136,12 @@ const EventDetail = () => {
       <div className="px-20 -mt-5">
         {!loading ? (
           <>
-            {eventsSameDay.length > 0 ? (
+            {peopleSameDay.length > 0 ? (
               <div className="border-1.5 border-gray-100 shadow-lg bg-white p-5 rounded-md mb-10">
                 <p className="text-2xl font-bold mb-5">Các sự kiện cùng ngày</p>
                 <div className="grid grid-cols-3 gap-5">
-                  {eventsSameDay.map((event) => (
-                    <CardEventChild event={event} />
+                  {peopleSameDay.map((person) => (
+                    <CardPersonChild person={person} />
                   ))}
                 </div>
               </div>
@@ -152,4 +175,4 @@ const EventDetail = () => {
   );
 };
 
-export default EventDetail;
+export default PersonDetail;

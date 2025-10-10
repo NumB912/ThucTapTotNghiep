@@ -15,6 +15,9 @@ const ToggleFavorite = ({ className = "", event_id }: ToggleFavoriteProps) => {
   const { token } = useAuth();
 
   useEffect(() => {
+
+    if(!token){return}
+
     const fetchFavorite = async () => {
       try {
         setLoading(true);
@@ -37,7 +40,6 @@ const ToggleFavorite = ({ className = "", event_id }: ToggleFavoriteProps) => {
 
   const handleToggle = async () => {
     if (!event_id || loading) return;
-
     const prevState = isActive;
     setIsActive(!prevState);
     setLoading(true);

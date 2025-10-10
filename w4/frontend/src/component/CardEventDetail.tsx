@@ -15,7 +15,7 @@ const CardEventDetail = ({event}:CardEventDetailProp) => {
       </div>
 
       <img
-        src={"http://127.0.0.1:8000/api"+event?.image?.url||
+        src={event.image_url||
           "https://www.daysoftheyear.com/cdn-cgi/image/dpr=1%2Cf=auto%2Cfit=cover%2Ch=900%2Cq=85%2Cw=2192/wp-content/uploads/international-podcast-day.jpg"}
         className="object-cover w-full h-full transform hover:scale-105 transition duration-500"
         alt="Card Image"

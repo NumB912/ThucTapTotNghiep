@@ -10,7 +10,7 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::with(['image', 'region','details','details.images'])->get();
+        $events = Event::with([ 'location','details','details.images','people'])->get();
 
         if ($events->isEmpty()) {
             return response()->json([
@@ -31,7 +31,7 @@ class EventController extends Controller
         'content' => 'nullable|string',
         'start_day' => 'required|date',
         'end_day' => 'nullable|date',
-        'region_id' => 'nullable|integer',   
+        'location_id' => 'nullable|integer',   
         'parent_id' => 'nullable|integer',   
         'img_id' => 'nullable|integer',      
     ]);
@@ -41,7 +41,7 @@ class EventController extends Controller
 
     public function show($id)
     {
-        return Event::with(['details','image','region'])->findOrFail($id);
+        return Event::with(['details','location','people'])->findOrFail($id);
     }
 
     public function update(Request $request, $id)
@@ -61,7 +61,7 @@ class EventController extends Controller
 
         $carbon = Carbon::parse($date);
 
-        $events = Event::with('image','region')->whereDay('start_day', $carbon->day)
+        $events = Event::with('location','people')->whereDay('start_day', $carbon->day)
             ->whereMonth('start_day', $carbon->month)
             ->get();
 

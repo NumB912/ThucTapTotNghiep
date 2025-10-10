@@ -6,9 +6,24 @@ interface DayProps {
   active: boolean;
   onFocus: () => void;
   hasEvent: boolean;
+  hasPerson: boolean;
 }
 
-const Day = ({ day, active, onFocus, hasEvent = false }: DayProps) => {
+const Day = ({
+  day,
+  active,
+  onFocus,
+  hasEvent = false,
+  hasPerson = false,
+}: DayProps) => {
+  const dotColor = hasEvent && hasPerson
+    ? "bg-red-400" 
+    : hasEvent
+    ? "bg-green-400" 
+    : hasPerson
+    ? "bg-blue-400"
+    : "";
+
   return (
     <button
       className={`
@@ -19,8 +34,9 @@ const Day = ({ day, active, onFocus, hasEvent = false }: DayProps) => {
       onClick={onFocus}
     >
       <span>{day}</span>
-      {hasEvent && (
-        <span className="w-2 h-2 bg-green-400 rounded-full mt-1"></span>
+
+      {dotColor && (
+        <span className={`w-2 h-2 rounded-full mt-1 ${dotColor}`}></span>
       )}
     </button>
   );

@@ -11,6 +11,7 @@ import ChangePassword from "../pages/auth/changePassword";
 import Favorites from "../pages/auth/favorite";
 import Map from "../pages/mapping";
 import PrivateRoute from "../component/privateRoute";
+import PersonDetail from "../pages/personDetail";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -28,6 +29,9 @@ const router = createBrowserRouter([
       {
         path: "/event/:id",
         element: <EventDetail />,
+      },{
+         path: "/person/:id",
+        element: <PersonDetail />,
       },
       {
         element: <PrivateRoute />,

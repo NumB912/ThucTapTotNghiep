@@ -2,17 +2,10 @@ import React from "react";
 import { useAuth } from "../../context/userContext";
 import { useNavigate } from "react-router";
 import { FaArrowLeft, FaChair, FaHeart, FaPen } from "react-icons/fa";
-import ModalLogin from "../../component/modalLogin";
 
 const Profile = () => {
-  const { user, requireLogin,isLoginModalOpen } = useAuth();
+  const { user} = useAuth();
   const navigate = useNavigate();
-
-  if(requireLogin()){ 
-    console.log(isLoginModalOpen)
-    return  <ModalLogin />
-  }
-
   return (
     <div className="w-1/2 flex flex-col items-center gap-5 shadow-md bg-white rounded border border-gray-200 p-5 mx-auto mt-10">
       <div className="w-full flex gap-2 mb-5">

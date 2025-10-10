@@ -1,6 +1,5 @@
 import type { EventDetail } from "./EventDetail";
-import type { Image } from "./Image";
-import type { Region } from "./Region"
+import type { Location } from "./Location"
 
 export interface Event{
   id:number;
@@ -8,7 +7,7 @@ export interface Event{
   content:string,
   start_day:Date,
   end_day?:Date,
-  region?:Region,
+  location?:Location,
   details?:EventDetail[];
-  image:Image;
+  image_url:string;
 }

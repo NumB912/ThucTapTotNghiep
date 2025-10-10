@@ -1,10 +1,10 @@
-export interface Region{
+export interface Location{
     id:number;
     region:Point[],
     x:number;
     y:number;
-    region_name:string;
-    parent?:Region;
+    Location:string;
+    parent?:Location;
 }
 
 interface Point{

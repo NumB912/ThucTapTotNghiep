@@ -3,12 +3,13 @@ import ToggleFavorite from "./ToggleFavorite";
 import type { Event } from "../model/Event";
 import { useNavigate } from "react-router";
 import ToggleMap from "./toggleMap";
+import type { Person } from "../model/Person";
 
-interface CardEventProp{
-  event:Event;
+interface PersonEventProp{
+  person:Person;
 }
 
-const CardEvent = ({event}:CardEventProp) => {
+const CardPerson = ({person}:PersonEventProp) => {
     const navigate = useNavigate()
   return (
     <div
@@ -16,25 +17,21 @@ const CardEvent = ({event}:CardEventProp) => {
     >
       <div className="w-3/5 relative">
         <img
-          src={event.image_url||"https://cellphones.com.vn/sforum/wp-content/uploads/2024/03/anh-hinh-nen-thien-nhien-anime-59.jpg"}
+          src={person.image_url||""}
           className="object-cover rounded-lg w-full h-full"
           alt="Card Image"
         />
-          <div className="absolute top-2 right-2 rounded-full flex gap-2">
-            {event.location?<ToggleMap eventId={event.id} className="rounded-full aspect-square w-fit"/>:""}
-          <ToggleFavorite event_id={event.id} className="rounded-full aspect-square w-fit"/>
-          </div>
       </div>
 
       <div className="w-2/5 flex flex-col gap-5">
         <div className="title-card">
-          <h3 className="text-2xl font-bold">{event.title}</h3>
+          <h3 className="text-2xl font-bold">{person.name}</h3>
           {/* <p className="text-md text-gray-400">{event.day?.toDateString()}</p> */}
         </div>
         <p className="text-md line-clamp-4">
-          {event.content}
+          {person.content}
         </p>
-        <button onClick={()=>{navigate(`/event/${event.id}`)}} className="bg-purple-500 text-white text-md p-3 font-bold w-fit hover:scale-105 duration-300">
+        <button onClick={()=>{navigate(`/person/${person.id}`)}} className="bg-purple-500 text-white text-md p-3 font-bold w-fit hover:scale-105 duration-300">
           Xem thêm
         </button>
       </div>
@@ -42,4 +39,4 @@ const CardEvent = ({event}:CardEventProp) => {
   );
 };
 
-export default CardEvent;
+export default CardPerson;
