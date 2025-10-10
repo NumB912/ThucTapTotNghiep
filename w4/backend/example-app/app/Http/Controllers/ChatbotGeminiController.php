@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\ChatbotGeminiService;
-use App\Services\GeminiService;
 use Illuminate\Http\Request;
+use App\Services\ChatbotGeminiService; // ✅ Đảm bảo dòng này đúng
 
 class ChatbotGeminiController extends Controller
 {
     protected $gemini;
 
-    public function __construct(GeminiService $gemini)
+    public function __construct(ChatbotGeminiService $gemini) // ✅ Đổi đúng tên
     {
         $this->gemini = $gemini;
     }

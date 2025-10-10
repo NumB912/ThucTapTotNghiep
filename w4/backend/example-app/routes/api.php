@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatbotGeminiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FavoriteController;
@@ -18,6 +19,7 @@ Route::get('/people/day/{date}',[PersonController::class,'getPersonWithDay']);
 Route::get('/people/month/{date}',[PersonController::class,'getPeopleWithMonth']);
 Route::get('/users/{filename}', [UserController::class, 'avatar']);
 Route::get('/images/{filename}', [ImageController::class, 'show']);
+Route::post('/chatbot', [ChatbotGeminiController::class, 'chat']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::put('/user', [UserController::class, 'update']);

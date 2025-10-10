@@ -29,7 +29,7 @@ class ChatbotGeminiService
                 'contents' => [
                     [
                         'parts' => [
-                            ['text' => "Bạn là chatbot chuyên về giao thông Việt Nam. Trả lời các câu hỏi liên quan luật giao thông. Nếu câu hỏi khác thì từ chối."],
+                            ['text' => "Bạn là một chuyên gia về lịch sữ và địa lý Việt Nam, bạn chỉ nhận các promt liên quan tới chuyên ngành của bạn."],
                             ['text' => $message]
                         ]
                     ]
